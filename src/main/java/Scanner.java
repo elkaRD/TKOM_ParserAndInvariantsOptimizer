@@ -35,7 +35,7 @@ public class Scanner implements IScanner
 
     private void skipComments(IInputManager inputManager)
     {
-        if (!inputManager.isAvailableChar(1))
+        if (!inputManager.isAvailableChar(2))
             return;
 
         if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '/')
@@ -46,7 +46,7 @@ public class Scanner implements IScanner
             while (inputManager.isAvailableChar() && !isNewLine(inputManager.peekNext()))
                 inputManager.getNext();
         }
-        else if (inputManager.peekNext() == '/' && inputManager.peekNext(1) == '*')
+        else if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '*')
         {
             inputManager.getNext();
             inputManager.getNext();
