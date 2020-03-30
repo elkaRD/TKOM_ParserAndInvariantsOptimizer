@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.FoundIndex;
+
 public class Scanner implements IScanner
 {
     public void parseTokens(IInputManager inputManager)
@@ -14,8 +16,8 @@ public class Scanner implements IScanner
 
         while (inputManager.isAvailableChar())
         {
-            skipWhiteChars(inputManager);
-            skipComments(inputManager);
+            //pre-processing
+            while (skipWhiteChars(inputManager) || skipComments(inputManager));
 
             if (!inputManager.isAvailableChar())
                 break;
@@ -28,16 +30,34 @@ public class Scanner implements IScanner
         return null;
     }
 
-    private void skipWhiteChars(IInputManager inputManager)
+    private boolean skipWhiteChars(IInputManager inputManager)
     {
+        boolean skipped = false;
+        while (inputManager.isAvailableChar() && isWhite(inputManager.peekNext()))
+        {
+            inputManager.getNext();
+            skipped = true;
+        }
 
+        return skipped;
     }
 
-    private void skipComments(IInputManager inputManager)
+    private boolean skipComments(IInputManager inputManager)
     {
-        if (!inputManager.isAvailableChar(2))
-            return;
+        boolean foundComment = false;
+        while (inputManager.isAvailableChar(2))
+        {
+            boolean skipped = skipSingleLineComment(inputManager) || skipMultiLineComment(inputManager);
+            foundComment = foundComment || skipped;
+            if (!skipped)
+                break;
+        }
 
+        return foundComment;
+    }
+
+    private boolean skipSingleLineComment(IInputManager inputManager)
+    {
         if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '/')
         {
             inputManager.getNext();
@@ -45,8 +65,16 @@ public class Scanner implements IScanner
 
             while (inputManager.isAvailableChar() && !isNewLine(inputManager.peekNext()))
                 inputManager.getNext();
+
+            return true;
         }
-        else if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '*')
+
+        return false;
+    }
+
+    private boolean skipMultiLineComment(IInputManager inputManager)
+    {
+        if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '*')
         {
             inputManager.getNext();
             inputManager.getNext();
@@ -60,7 +88,11 @@ public class Scanner implements IScanner
                     break;
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     private boolean isWhite(char c)
