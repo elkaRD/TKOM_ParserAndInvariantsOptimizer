@@ -31,6 +31,8 @@ public class ReservedTokens
         reservedTokens.put(",", TokenType.COMMA);
         reservedTokens.put("return", TokenType.RETURN);
 
+        reservedTokens.put("=", TokenType.ASSIGN);
+
         //mathematical operators
         reservedTokens.put("+", TokenType.ADD);
         reservedTokens.put("-", TokenType.SUB);

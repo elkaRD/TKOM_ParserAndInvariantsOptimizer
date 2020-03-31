@@ -1,3 +1,4 @@
+import com.sun.corba.se.impl.encoding.BufferManagerReadGrow;
 import com.sun.org.apache.xpath.internal.FoundIndex;
 import sun.jvm.hotspot.ui.tree.FloatTreeNodeAdapter;
 
@@ -6,7 +7,6 @@ public class Scanner implements IScanner
     private enum State
     {
         INVALID,
-        //INIT,
 
         BEGIN,
         ID,
@@ -14,9 +14,7 @@ public class Scanner implements IScanner
         INT,
         FLOAT,
         POINT,
-        SPECIAL,
-
-        PREDEFINED
+        SPECIAL
     }
 
     public void parseTokens(IInputManager inputManager)
@@ -38,14 +36,23 @@ public class Scanner implements IScanner
 
         while (inputManager.isAvailableChar())
         {
-            //pre-processing
-            while (skipComments(inputManager));
+//            if (curState == State.BEGIN)
+//                skipWhiteChars(inputManager);
+
+            boolean skipped = false;
+            do {
+                skipped = false;
+                if (curState == State.BEGIN)
+                    skipped = skipWhiteChars(inputManager);
+                skipped = skipped || skipComments(inputManager);
+            }
+            while (skipped);
+
+//            if (curState == State.BEGIN)
+//                skipWhiteChars(inputManager);
 
             if (!inputManager.isAvailableChar())
                 break;
-
-            if (curState == State.BEGIN)
-                skipWhiteChars(inputManager);
 
             char nextChar = inputManager.peekNext();
 
@@ -54,9 +61,9 @@ public class Scanner implements IScanner
                     if (isAlpha(nextChar)) {
                         curState = State.ID;
                     } else if (isNonZeroDigit(nextChar)) {
-                        curState = State.ZERO;
-                    } else if (isDigit(nextChar)) {
                         curState = State.INT;
+                    } else if (nextChar == '0') {
+                        curState = State.ZERO;
                     } else if (nextChar == '.') {
                         curState = State.POINT;
                     } else if (isSpecial(nextChar)) {
@@ -128,12 +135,12 @@ public class Scanner implements IScanner
                             generateToken(curToken, prevState, curTokenStr) :
                             generateToken(curToken, reserved);
 
-                    int i = 20;
+                    System.out.println(curTokenStr + "   " + generatedToken.type);
                 }
                 else
                 {
                     //TODO: raise error
-                    int e = 30;
+                    System.out.println("ERROR");
                 }
 
                 curTokenStr = "";
@@ -229,6 +236,7 @@ public class Scanner implements IScanner
 
             while (inputManager.isAvailableChar() && !isNewLine(inputManager.peekNext()))
                 inputManager.getNext();
+            inputManager.getNext();
 
             return true;
         }

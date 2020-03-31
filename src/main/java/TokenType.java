@@ -17,6 +17,8 @@ public enum TokenType
     COMMA,
     RETURN,
 
+    ASSIGN,
+
     //mathematical operators
     ADD,
     SUB,
