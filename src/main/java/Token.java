@@ -1,9 +1,8 @@
 public class Token
 {
-    public TokenType tokenType = TokenType.INVALID;
+    public TokenType type = TokenType.INVALID;
 
-    public String tokenStr;
-
+    public String valueId;
     public int valueInt;
     public float valueFloat;
 

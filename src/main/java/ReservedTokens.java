@@ -1,15 +1,18 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ReservedTokens
 {
-    private ReservedTokens instance = new ReservedTokens();
-    private Map<String, TokenType> reservedTokens = new HashMap<>();
+    private static ReservedTokens instance = new ReservedTokens();
 
-    public ReservedTokens getInstance()
+    public static ReservedTokens getInstance()
     {
         return instance;
     }
+
+    private Map<String, TokenType> reservedTokens = new HashMap<>();
+//    private ArrayList<String> multiSpecialCharacters = new ArrayList<>();
 
     private ReservedTokens()
     {
@@ -28,13 +31,13 @@ public class ReservedTokens
         reservedTokens.put(",", TokenType.COMMA);
         reservedTokens.put("return", TokenType.RETURN);
 
-                //mathematical operators
+        //mathematical operators
         reservedTokens.put("+", TokenType.ADD);
         reservedTokens.put("-", TokenType.SUB);
         reservedTokens.put("/", TokenType.DIV);
         reservedTokens.put("*", TokenType.MUL);
 
-                //logical operators
+        //logical operators
         reservedTokens.put("&&", TokenType.AND);
         reservedTokens.put("||", TokenType.OR);
         reservedTokens.put(">", TokenType.GREATER);
@@ -45,25 +48,40 @@ public class ReservedTokens
         reservedTokens.put("!=", TokenType.NOT_EQUAL);
         reservedTokens.put("!", TokenType.NEG);
 
-                //variable types
+        //variable types
         reservedTokens.put("int", TokenType.INT);
         reservedTokens.put("float", TokenType.FLOAT);
         reservedTokens.put("bool", TokenType.BOOL);
 
-                //boolean values
+        //boolean values
         reservedTokens.put("true", TokenType.TRUE);
         reservedTokens.put("false", TokenType.FALSE);
 
-                //loop control keywords
+        //loop control keywords
         reservedTokens.put("continue", TokenType.CONTINUE);
         reservedTokens.put("break", TokenType.BREAK);
+
+//        multiSpecialCharacters.add("&&");
+//        multiSpecialCharacters.add("||");
+//        multiSpecialCharacters.add(">=");
+//        multiSpecialCharacters.add("<=");
+//        multiSpecialCharacters.add("==");
+//        multiSpecialCharacters.add("!=");
     }
 
-    public TokenType recognizeReservedToken(Token token)
+    public TokenType recognizeReservedToken(String tokenStr)
     {
-        if (!reservedTokens.containsKey(token.tokenStr))
+        if (!reservedTokens.containsKey(tokenStr))
             return TokenType.INVALID;
 
-        return reservedTokens.get(token.tokenStr);
+        return reservedTokens.get(tokenStr);
     }
+
+//    public boolean existTokensStartingWithSpecial(String special)
+//    {
+//        for (String token : multiSpecialCharacters)
+//        {
+//
+//        }
+//    }
 }

@@ -39,6 +39,12 @@ public enum TokenType
     FLOAT,
     BOOL,
 
+    //constant numeric values
+    NUM_INT,
+    NUM_FLOAT,
+
+    ID,
+
     //boolean values
     TRUE,
     FALSE,
