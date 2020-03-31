@@ -17,7 +17,7 @@ public class TKOM
                 "     close\n" +
                 "}\n";
 
-//        String example = "i = 20; b == c";
+//        String example = "15.12 0.12 .12 12. abc";
 
 //        String example = "abc//def";
 

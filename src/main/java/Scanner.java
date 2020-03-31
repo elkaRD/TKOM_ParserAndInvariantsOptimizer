@@ -81,11 +81,22 @@ public class Scanner implements IScanner
                     break;
 
                 case ZERO:
-                    curState = State.INVALID;
+                    if (nextChar == '.')
+                    {
+                        curState =  State.FLOAT;
+                    }
+                    else
+                    {
+                        curState = State.INVALID;
+                    }
                     break;
 
                 case INT:
-                    if (!isDigit(nextChar))
+                    if (nextChar == '.')
+                    {
+                        curState =  State.FLOAT;
+                    }
+                    else if (!isDigit(nextChar))
                     {
                         curState = State.INVALID;
                     }
@@ -121,7 +132,7 @@ public class Scanner implements IScanner
                     break;
             }
 
-            if (prevState == curState || prevState == State.BEGIN)
+            if (curState != State.INVALID)
             {
                 curTokenStr += inputManager.getNext();
             }
