@@ -44,12 +44,15 @@ public class InputManager implements IInputManager
     public char getNext()
     {
         char result = peekNext();
-        cursor++;
+
         if (isNewLine(result))
         {
             posInLine = 0;
             lineIndex++;
         }
+        cursor++;
+        posInLine++;
+
         return result;
     }
 
@@ -104,7 +107,10 @@ public class InputManager implements IInputManager
 
     private void detectNewLines()
     {
-        int linesCounter = 0;
+        linesBeginnings.clear();
+        linesBeginnings.put(0, 0);
+        int linesCounter = 1;
+
         for (int i = 0; i < plainText.length(); i++)
         {
             if (isNewLine(plainText.charAt(i)))

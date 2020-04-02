@@ -2,6 +2,8 @@ import com.sun.corba.se.impl.encoding.BufferManagerReadGrow;
 import com.sun.org.apache.xpath.internal.FoundIndex;
 import sun.jvm.hotspot.ui.tree.FloatTreeNodeAdapter;
 
+import java.awt.*;
+
 public class Scanner implements IScanner
 {
     private enum State
@@ -17,12 +19,22 @@ public class Scanner implements IScanner
         SPECIAL
     }
 
+    private boolean errorFlag;
+
     public void parseTokens(IInputManager inputManager)
     {
+        errorFlag = false;
+
         while (inputManager.isAvailableChar())
         {
             skipWhiteCharsAndComments(inputManager, true, true);
-            parseNextToken(inputManager);
+            Token token = parseNextToken(inputManager);
+
+            if (errorFlag)
+            {
+                ErrorHandler.getInstance().displayError("Aborting lexer work due to found error");
+                break;
+            }
         }
     }
 
@@ -33,18 +45,8 @@ public class Scanner implements IScanner
         String curTokenStr = "";
         CharPos tokenPos = inputManager.getCurrentPosition();
 
-        while (inputManager.isAvailableChar()) 
+        while (skipWhiteCharsAndComments(inputManager, false, true))
         {
-            skipWhiteCharsAndComments(inputManager, false, true);
-
-            if (curState == State.BEGIN)
-            {
-
-            }
-            
-            if (!inputManager.isAvailableChar())
-                break;
-
             char nextChar = inputManager.peekNext();
 
             switch (curState) {
@@ -83,7 +85,15 @@ public class Scanner implements IScanner
             }
             else
             {
-                return createToken(prevState, curTokenStr, tokenPos);
+                Token createdToken = createToken(prevState, curTokenStr, tokenPos);
+
+                if (createdToken == null)
+                {
+                    ErrorHandler.getInstance().displayErrorLine(tokenPos, "Cannot recognize token");
+                    errorFlag = true;
+                }
+
+                return createdToken;
             }
 
             prevState = curState;
@@ -165,7 +175,7 @@ public class Scanner implements IScanner
         return State.INVALID;
     }
     
-    private void skipWhiteCharsAndComments(IInputManager inputManager, boolean skipWhite, boolean skipComments)
+    private boolean skipWhiteCharsAndComments(IInputManager inputManager, boolean skipWhite, boolean skipComments)
     {
         boolean skipped = false;
         do {
@@ -176,31 +186,29 @@ public class Scanner implements IScanner
                 skipped = skipped || skipComments(inputManager);
         }
         while (skipped);
+
+        if (!inputManager.isAvailableChar())
+            return false;
+
+        return true;
     }
     
     private Token createToken(State prevState, String curTokenStr, CharPos tokenPos)
     {
-        if (isAcceptingState(prevState))
-        {
-            TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
+        if (!isAcceptingState(prevState))
+            return null;
 
-            Token generatedToken = reserved == TokenType.INVALID ?
-                    generateToken(prevState, curTokenStr) :
-                    generateToken(reserved);
+        TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
 
-            generatedToken.tokenPos = tokenPos;
+        Token generatedToken = reserved == TokenType.INVALID ?
+                generateToken(prevState, curTokenStr) :
+                generateToken(reserved);
 
-            System.out.println(curTokenStr + "\t\t" + generatedToken.type);
+        generatedToken.tokenPos = tokenPos;
 
-            return generatedToken;
-        }
-        else
-        {
-            //TODO: raise error
-            System.out.println("ERROR");
-        }
-        
-        return null;
+        System.out.println(curTokenStr + "\t\t" + generatedToken.type);
+
+        return generatedToken;
     }
 
     private boolean isAcceptingState(State state)

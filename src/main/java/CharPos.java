@@ -6,12 +6,20 @@ public class CharPos
     public final int posInLine;
     public final int lineIndex;
 
+    private final int lenght;
+
     public CharPos(IInputManager inputManager, int cursorPos, int posInLine, int lineIndex)
+    {
+        this(inputManager, cursorPos, posInLine, lineIndex, 1);
+    }
+
+    public CharPos(IInputManager inputManager, int cursorPos, int posInLine, int lineIndex, int lenght)
     {
         this.inputManager = inputManager;
         this.cursorPos = cursorPos;
         this.posInLine = posInLine;
         this.lineIndex = lineIndex;
+        this.lenght = lenght;
     }
 
     public String showCharInLine()
@@ -20,7 +28,8 @@ public class CharPos
 
         for (int i = 0; i < posInLine-1; i++)
             result += ' ';
-        result += '^';
+        for (int i = 0; i < lenght; i++)
+            result += '^';
 
         return result;
     }

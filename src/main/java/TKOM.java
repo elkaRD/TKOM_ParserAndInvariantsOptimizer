@@ -10,6 +10,7 @@ public class TKOM
                 "     //this 2nd line\n" +
                 "     float a = (0.5+var) +-15;/*middle comment*/\n" +
                 "     for (int i = 0; i < 12; /*and*/ i = i+1) t\n" +
+                "   hdaksajdhkashjd$%$#WR#Wdfe4 343242.432432.4323..\n" +
                 "     if (var >= a && i != a) {} else {bool cond = false;}/*hdfjksdjd\n" +
                 "     fndsnfds*/end\n" +
                 "     float close = 0.50.23  4657bas\n" +
