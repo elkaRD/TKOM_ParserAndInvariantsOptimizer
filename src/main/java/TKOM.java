@@ -4,8 +4,6 @@ public class TKOM
 {
     public static void main(String[] args)
     {
-        System.out.print("Hello World");
-
         String example = "void main ()\n" +
                 "{\n" +
                 "     int var = 5004; //this is the first line\n" +
@@ -14,7 +12,7 @@ public class TKOM
                 "     for (int i = 0; i < 12; /*and*/ i = i+1) t\n" +
                 "     if (var >= a && i != a) {} else {bool cond = false;}/*hdfjksdjd\n" +
                 "     fndsnfds*/end\n" +
-                "     close\n" +
+                "     float close = 0.50.23  4657bas\n" +
                 "}\n";
 
 //        String example = "15.12 0.12 .12 12. abc";

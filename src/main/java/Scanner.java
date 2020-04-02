@@ -27,30 +27,14 @@ public class Scanner implements IScanner
 
     private Token parseNextToken(IInputManager inputManager)
     {
-        String result = "";
-
         State curState = State.BEGIN;
         State prevState = State.BEGIN;
-        Token curToken = new Token();
         String curTokenStr = "";
 
-        while (inputManager.isAvailableChar())
+        while (inputManager.isAvailableChar()) 
         {
-//            if (curState == State.BEGIN)
-//                skipWhiteChars(inputManager);
-
-            boolean skipped = false;
-            do {
-                skipped = false;
-                if (curState == State.BEGIN)
-                    skipped = skipWhiteChars(inputManager);
-                skipped = skipped || skipComments(inputManager);
-            }
-            while (skipped);
-
-//            if (curState == State.BEGIN)
-//                skipWhiteChars(inputManager);
-
+            skipWhiteCharsAndComments(inputManager, curState == State.BEGIN, true);
+            
             if (!inputManager.isAvailableChar())
                 break;
 
@@ -58,77 +42,31 @@ public class Scanner implements IScanner
 
             switch (curState) {
                 case BEGIN:
-                    if (isAlpha(nextChar)) {
-                        curState = State.ID;
-                    } else if (isNonZeroDigit(nextChar)) {
-                        curState = State.INT;
-                    } else if (nextChar == '0') {
-                        curState = State.ZERO;
-                    } else if (nextChar == '.') {
-                        curState = State.POINT;
-                    } else if (isSpecial(nextChar)) {
-                        curState = State.SPECIAL;
-                    } else {
-                        curState = State.INVALID;
-                    }
+                    curState = handleBegin(nextChar);
                     break;
 
                 case ID:
-                    if (!isAlpha(nextChar))
-                    {
-                        curState = State.INVALID;
-                    }
+                    curState = handleId(nextChar);
                     break;
 
                 case ZERO:
-                    if (nextChar == '.')
-                    {
-                        curState =  State.FLOAT;
-                    }
-                    else
-                    {
-                        curState = State.INVALID;
-                    }
+                    curState = handleZero(nextChar);
                     break;
 
                 case INT:
-                    if (nextChar == '.')
-                    {
-                        curState =  State.FLOAT;
-                    }
-                    else if (!isDigit(nextChar))
-                    {
-                        curState = State.INVALID;
-                    }
+                    curState = handleInt(nextChar);
                     break;
 
                 case FLOAT:
-                    if (!isDigit(nextChar))
-                    {
-                        curState = State.INVALID;
-                    }
+                    curState = handleFloat(nextChar);
                     break;
 
                 case POINT:
-                    if (isDigit(nextChar))
-                    {
-                        curState = State.FLOAT;
-                    }
-                    else
-                    {
-                        curState = State.INVALID;
-                    }
+                    curState = handlePoint(nextChar);
                     break;
 
                 case SPECIAL:
-                    if (isSpecial(nextChar) && ReservedTokens.getInstance().recognizeReservedToken(curTokenStr+nextChar) != TokenType.INVALID)
-                    {
-                        curState = State.SPECIAL;
-                    }
-                    else
-                    {
-                        curState = State.INVALID;
-                    }
+                    curState = handleSpecial(nextChar, curTokenStr);
                     break;
             }
 
@@ -138,35 +76,118 @@ public class Scanner implements IScanner
             }
             else
             {
-                if (isAcceptingState(prevState))
-                {
-                    TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
-
-                    Token generatedToken = reserved == TokenType.INVALID ?
-                            generateToken(curToken, prevState, curTokenStr) :
-                            generateToken(curToken, reserved);
-
-                    System.out.println(curTokenStr + "   " + generatedToken.type);
-                }
-                else
-                {
-                    //TODO: raise error
-                    System.out.println("ERROR");
-                }
-
-                curTokenStr = "";
-                curToken = new Token();
-                curState = State.BEGIN;
-                prevState = State.BEGIN;
+                return createToken(prevState, curTokenStr);
             }
 
             prevState = curState;
-
-            //result += inputManager.getNext();
         }
 
-        System.out.println("Text after lexer: " + result);
+        return null;
+    }
+    
+    private State handleBegin(char nextChar)
+    {
+        if (isAlpha(nextChar)) {
+            return State.ID;
+        } else if (isNonZeroDigit(nextChar)) {
+            return State.INT;
+        } else if (nextChar == '0') {
+            return State.ZERO;
+        } else if (nextChar == '.') {
+            return State.POINT;
+        } else if (isSpecial(nextChar)) {
+            return State.SPECIAL;
+        }
 
+        return State.INVALID;
+    }
+
+    private State handleId(char nextChar)
+    {
+        if (!isAlpha(nextChar)) {
+            return State.INVALID;
+        }
+
+        return State.ID;
+    }
+
+    private State handleZero(char nextChar)
+    {
+        if (nextChar == '.') {
+            return State.FLOAT;
+        }
+
+        return State.INVALID;
+    }
+
+    private State handleInt(char nextChar)
+    {
+        if (nextChar == '.') {
+            return State.FLOAT;
+        } else if (!isDigit(nextChar)) {
+            return State.INVALID;
+        }
+
+        return State.INT;
+    }
+
+    private State handleFloat(char nextChar)
+    {
+        if (!isDigit(nextChar)) {
+            return State.INVALID;
+        }
+
+        return State.FLOAT;
+    }
+
+    private State handlePoint(char nextChar)
+    {
+        if (isDigit(nextChar)) {
+            return State.FLOAT;
+        }
+
+        return State.INVALID;
+    }
+
+    private State handleSpecial(char nextChar, String curTokenStr)
+    {
+        if (isSpecial(nextChar) && ReservedTokens.getInstance().recognizeReservedToken(curTokenStr + nextChar) != TokenType.INVALID) {
+            return State.SPECIAL;
+        }
+
+        return State.INVALID;
+    }
+    
+    private void skipWhiteCharsAndComments(IInputManager inputManager, boolean skipWhite, boolean skipComments)
+    {
+        boolean skipped = false;
+        do {
+            skipped = false;
+            if (skipWhite)
+                skipped = skipWhiteChars(inputManager);
+            if (skipComments)
+                skipped = skipped || skipComments(inputManager);
+        }
+        while (skipped);
+    }
+    
+    private Token createToken(State prevState, String curTokenStr)
+    {
+        if (isAcceptingState(prevState)) {
+            TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
+
+            Token generatedToken = reserved == TokenType.INVALID ?
+                    generateToken(prevState, curTokenStr) :
+                    generateToken(reserved);
+
+            System.out.println(curTokenStr + "\t\t" + generatedToken.type);
+
+            return generatedToken;
+        } else {
+            //TODO: raise error
+            System.out.println("ERROR");
+        }
+        
         return null;
     }
 
@@ -184,28 +205,33 @@ public class Scanner implements IScanner
         return false;
     }
 
-    private Token generateToken(Token curToken, TokenType predefinedType)
+    private Token generateToken(TokenType predefinedType)
     {
+        Token curToken = new Token();
+
         curToken.type = predefinedType;
         return curToken;
     }
 
-    private Token generateToken(Token curToken, State state, String tokenStr)
+    private Token generateToken(State state, String tokenStr)
     {
+        Token curToken = new Token();
+
         switch (state)
         {
             case ID:
                 curToken.type = TokenType.ID;
-                curToken.valueId = tokenStr;
+//                curToken.valueId = tokenStr;
+
                 break;
             case INT:
             case ZERO:
                 curToken.type = TokenType.NUM_INT;
-                curToken.valueInt = Integer.parseInt(tokenStr);
+//                curToken.valueInt = Integer.parseInt(tokenStr);
                 break;
             case FLOAT:
                 curToken.type = TokenType.NUM_FLOAT;
-                curToken.valueFloat = Float.parseFloat(tokenStr);
+//                curToken.valueFloat = Float.parseFloat(tokenStr);
                 break;
         }
 
