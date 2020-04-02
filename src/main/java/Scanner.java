@@ -21,6 +21,7 @@ public class Scanner implements IScanner
     {
         while (inputManager.isAvailableChar())
         {
+            skipWhiteCharsAndComments(inputManager, true, true);
             parseNextToken(inputManager);
         }
     }
@@ -30,10 +31,16 @@ public class Scanner implements IScanner
         State curState = State.BEGIN;
         State prevState = State.BEGIN;
         String curTokenStr = "";
+        CharPos tokenPos = inputManager.getCurrentPosition();
 
         while (inputManager.isAvailableChar()) 
         {
-            skipWhiteCharsAndComments(inputManager, curState == State.BEGIN, true);
+            skipWhiteCharsAndComments(inputManager, false, true);
+
+            if (curState == State.BEGIN)
+            {
+
+            }
             
             if (!inputManager.isAvailableChar())
                 break;
@@ -76,7 +83,7 @@ public class Scanner implements IScanner
             }
             else
             {
-                return createToken(prevState, curTokenStr);
+                return createToken(prevState, curTokenStr, tokenPos);
             }
 
             prevState = curState;
@@ -171,19 +178,24 @@ public class Scanner implements IScanner
         while (skipped);
     }
     
-    private Token createToken(State prevState, String curTokenStr)
+    private Token createToken(State prevState, String curTokenStr, CharPos tokenPos)
     {
-        if (isAcceptingState(prevState)) {
+        if (isAcceptingState(prevState))
+        {
             TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
 
             Token generatedToken = reserved == TokenType.INVALID ?
                     generateToken(prevState, curTokenStr) :
                     generateToken(reserved);
 
+            generatedToken.tokenPos = tokenPos;
+
             System.out.println(curTokenStr + "\t\t" + generatedToken.type);
 
             return generatedToken;
-        } else {
+        }
+        else
+        {
             //TODO: raise error
             System.out.println("ERROR");
         }
@@ -207,35 +219,25 @@ public class Scanner implements IScanner
 
     private Token generateToken(TokenType predefinedType)
     {
-        Token curToken = new Token();
-
-        curToken.type = predefinedType;
-        return curToken;
+        return new Token(predefinedType);
     }
 
     private Token generateToken(State state, String tokenStr)
     {
-        Token curToken = new Token();
-
         switch (state)
         {
             case ID:
-                curToken.type = TokenType.ID;
-//                curToken.valueId = tokenStr;
+                return new TokenId(tokenStr);
 
-                break;
             case INT:
             case ZERO:
-                curToken.type = TokenType.NUM_INT;
-//                curToken.valueInt = Integer.parseInt(tokenStr);
-                break;
+                return new TokenInt(tokenStr);
+
             case FLOAT:
-                curToken.type = TokenType.NUM_FLOAT;
-//                curToken.valueFloat = Float.parseFloat(tokenStr);
-                break;
+                return new TokenFloat(tokenStr);
         }
 
-        return curToken;
+        return null;
     }
 
     private boolean skipWhiteChars(IInputManager inputManager)

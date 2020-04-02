@@ -1,3 +1,6 @@
+import java.util.Map;
+import java.util.TreeMap;
+
 public class InputManager implements IInputManager
 {
     private String plainText;
@@ -5,12 +8,15 @@ public class InputManager implements IInputManager
     private int lineIndex;
     private int posInLine;
 
+    private Map<Integer, Integer> linesBeginnings = new TreeMap<>();
+
     private void reset()
     {
         cursor = 0;
         lineIndex = 0;
         posInLine = 0;
         plainText = "";
+        linesBeginnings.clear();
     }
 
     public void readFile(String pathToFile)
@@ -22,6 +28,7 @@ public class InputManager implements IInputManager
     {
         reset();
         plainText = text;
+        detectNewLines();
     }
 
     public boolean isAvailableChar()
@@ -38,6 +45,11 @@ public class InputManager implements IInputManager
     {
         char result = peekNext();
         cursor++;
+        if (isNewLine(result))
+        {
+            posInLine = 0;
+            lineIndex++;
+        }
         return result;
     }
 
@@ -77,8 +89,29 @@ public class InputManager implements IInputManager
 
     public String getLine(int lineNum)
     {
-        //TODO
+        return plainText.substring(linesBeginnings.get(lineNum), linesBeginnings.get(lineNum+1));
+    }
 
-        return "";
+    public CharPos getCurrentPosition()
+    {
+        return new CharPos(this, cursor, posInLine, lineIndex);
+    }
+
+    private boolean isNewLine(char curChar)
+    {
+        return curChar == '\n';
+    }
+
+    private void detectNewLines()
+    {
+        int linesCounter = 0;
+        for (int i = 0; i < plainText.length(); i++)
+        {
+            if (isNewLine(plainText.charAt(i)))
+            {
+                linesBeginnings.put(linesCounter, i);
+                linesCounter++;
+            }
+        }
     }
 }

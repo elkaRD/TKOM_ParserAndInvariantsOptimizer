@@ -8,4 +8,5 @@ public interface IInputManager
      char peekPrev();
      void unget();
      String getLine(int lineNum);
+     CharPos getCurrentPosition();
 }
