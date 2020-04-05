@@ -19,11 +19,23 @@ public class Scanner implements IScanner
         SPECIAL
     }
 
-    private boolean errorFlag;
+    private boolean errorFlag = false;
+    private CharPos errorPos = null;
+
+    public boolean getErrorFlag()
+    {
+        return errorFlag;
+    }
+
+    public CharPos getErrorPos()
+    {
+        return errorPos;
+    }
 
     public void parseTokens(IInputManager inputManager, IParser parser)
     {
         errorFlag = false;
+        errorPos = null;
 
         while (inputManager.isAvailableChar())
         {
@@ -105,6 +117,7 @@ public class Scanner implements IScanner
         {
             ErrorHandler.getInstance().displayErrorLine(tokenPos, "Cannot recognize token");
             errorFlag = true;
+            errorPos = tokenPos;
         }
 
         return createdToken;

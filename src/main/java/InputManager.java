@@ -92,7 +92,10 @@ public class InputManager implements IInputManager
 
     public String getLine(int lineNum)
     {
-        return plainText.substring(linesBeginnings.get(lineNum), linesBeginnings.get(lineNum+1));
+        if (lineNum+1 < linesBeginnings.size())
+            return plainText.substring(linesBeginnings.get(lineNum), linesBeginnings.get(lineNum+1));
+
+        return plainText.substring(linesBeginnings.get(lineNum));
     }
 
     public CharPos getCurrentPosition()

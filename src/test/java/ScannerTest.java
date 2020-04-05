@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ScannerTest
@@ -30,15 +31,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkFloatDetection()
-    {
-        checkFloatDetection1();
-        checkFloatDetection2();
-        checkFloatDetection3();
-        checkFloatDetection4();
-    }
-
-    private void checkFloatDetection1()
+    public void checkFloatDetection1()
     {
         Token token = getFirstToken("123.");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -47,7 +40,8 @@ public class ScannerTest
         assertTrue(tokenFloat.value == 123.0);
     }
 
-    private void checkFloatDetection2()
+    @Test
+    public void checkFloatDetection2()
     {
         Token token = getFirstToken("123.45");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -56,7 +50,8 @@ public class ScannerTest
         assertTrue(tokenFloat.value == (float) 123.45);
     }
 
-    private void checkFloatDetection3()
+    @Test
+    public void checkFloatDetection3()
     {
         Token token = getFirstToken("0.");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -65,7 +60,8 @@ public class ScannerTest
         assertTrue(tokenFloat.value == 0);
     }
 
-    private void checkFloatDetection4()
+    @Test
+    public void checkFloatDetection4()
     {
         Token token = getFirstToken("0.12");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -194,13 +190,24 @@ public class ScannerTest
         assertTrue(tokens.get(it++).type == TokenType.CURLY_CLOSE);
 
         assertTrue(it == tokens.size());
-
     }
 
     @Test
-    public void checkErrorDetection()
+    public void checkErrorDetection1()
     {
+        CharPos errorPos = getErrorPos("#$%$#");
 
+        assertTrue(errorPos != null);
+        assertTrue(errorPos.cursorPos == 0);
+    }
+
+    @Test
+    public void checkErrorDetection2()
+    {
+        CharPos errorPos = getErrorPos("123#$%$#");
+
+        assertTrue(errorPos != null);
+        assertTrue(errorPos.cursorPos == 3);
     }
 
     @Test
@@ -215,6 +222,7 @@ public class ScannerTest
         scanner.skipWhiteChars(inputManager);
 
         assertTrue(inputManager.peekNext() == 'a');
+        assertFalse(scanner.getErrorFlag());
     }
 
     @Test
@@ -229,6 +237,7 @@ public class ScannerTest
         scanner.skipSingleLineComment(inputManager);
 
         assertTrue(inputManager.peekNext() == 'd');
+        assertFalse(scanner.getErrorFlag());
     }
 
     @Test
@@ -243,6 +252,7 @@ public class ScannerTest
         scanner.skipMultiLineComment(inputManager);
 
         assertTrue(inputManager.peekNext() == 'g');
+        assertFalse(scanner.getErrorFlag());
     }
 
     @Test
@@ -257,6 +267,7 @@ public class ScannerTest
         scanner.skipComments(inputManager);
 
         assertTrue(inputManager.peekNext() == 'g');
+        assertFalse(scanner.getErrorFlag());
     }
 
     @Test
@@ -271,6 +282,7 @@ public class ScannerTest
         scanner.skipComments(inputManager);
 
         assertTrue(inputManager.peekNext() == 'g');
+        assertFalse(scanner.getErrorFlag());
     }
 
     private boolean checkKeyword(String keyword)
@@ -282,7 +294,20 @@ public class ScannerTest
         Scanner scanner = new Scanner();
         scanner.parseTokens(input, parser);
 
+        assertFalse(scanner.getErrorFlag());
+
         return parser.token.type == ReservedTokens.getInstance().recognizeReservedToken(keyword);
+    }
+
+    private CharPos getErrorPos(String inputText)
+    {
+        InputManager input = new InputManager();
+        input.readText(inputText);
+
+        Scanner scanner = new Scanner();
+        scanner.parseTokens(input, new ParserMock());
+
+        return scanner.getErrorPos();
     }
 
     private Token getFirstToken(String inputText)
@@ -293,6 +318,8 @@ public class ScannerTest
 
         Scanner scanner = new Scanner();
         scanner.parseTokens(input, parser);
+
+        assertFalse(scanner.getErrorFlag());
 
         return parser.token;
     }
@@ -305,6 +332,8 @@ public class ScannerTest
 
         Scanner scanner = new Scanner();
         scanner.parseTokens(input, parser);
+
+        assertFalse(scanner.getErrorFlag());
 
         return parser.tokens;
     }
@@ -327,6 +356,5 @@ public class ScannerTest
         {
             this.tokens.add(token);
         }
-
     }
 }
