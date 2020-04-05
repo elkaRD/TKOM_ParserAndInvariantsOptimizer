@@ -37,7 +37,8 @@ public class Scanner implements IScanner
             }
 
             //TODO: temp solution; update when writing parser
-            if (parser != null)
+            //Token could be null in case when we trying to get token from text containing only white characters
+            if (parser != null && token != null)
                 parser.readToken(token);
         }
     }
@@ -95,6 +96,8 @@ public class Scanner implements IScanner
 
             prevState = curState;
         }
+
+        if (curState == State.BEGIN) return null;
 
         Token createdToken = createToken(prevState, curTokenStr, tokenPos);
 
@@ -250,7 +253,7 @@ public class Scanner implements IScanner
         return null;
     }
 
-    private boolean skipWhiteChars(IInputManager inputManager)
+    public boolean skipWhiteChars(IInputManager inputManager)
     {
         boolean skipped = false;
         while (inputManager.isAvailableChar() && isWhite(inputManager.peekNext()))
@@ -262,7 +265,7 @@ public class Scanner implements IScanner
         return skipped;
     }
 
-    private boolean skipComments(IInputManager inputManager)
+    public boolean skipComments(IInputManager inputManager)
     {
         boolean foundComment = false;
         while (inputManager.isAvailableChar(2))
@@ -276,7 +279,7 @@ public class Scanner implements IScanner
         return foundComment;
     }
 
-    private boolean skipSingleLineComment(IInputManager inputManager)
+    public boolean skipSingleLineComment(IInputManager inputManager)
     {
         if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '/')
         {
@@ -293,7 +296,7 @@ public class Scanner implements IScanner
         return false;
     }
 
-    private boolean skipMultiLineComment(IInputManager inputManager)
+    public boolean skipMultiLineComment(IInputManager inputManager)
     {
         if (inputManager.peekNext() == '/' && inputManager.peekNext(2) == '*')
         {

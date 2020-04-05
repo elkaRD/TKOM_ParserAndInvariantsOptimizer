@@ -1,3 +1,4 @@
+import jdk.internal.util.xml.impl.Input;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -127,15 +128,15 @@ public class ScannerTest
     @Test
     public void checkTokensDetection()
     {
-        String inputText = "void main ()" +
-                "{" +
-                "   float zmienna = 10.;" +
-                "   for (int i = 0; i < 10; i = i + 1)" +
-                "       if (zmienna * i <= 12 && true)" +
-                "           continue;" +
-                "       else" +
-                "           break;" +
-                "}";
+        String inputText = "void main ()                \n" +
+                "{                                      \n" +
+                "   float zmienna = 10.;                \n" +
+                "   for (int i = 0; i < 10; i = i + 1)  \n" +
+                "       if (zmienna * i <= 12 && true)  \n" +
+                "           continue;                   \n" +
+                "       else                            \n" +
+                "           break;                      \n" +
+                "}                                      ";
 
         Vector<Token> tokens = getTokens(inputText);
         int it = 0;
@@ -191,6 +192,9 @@ public class ScannerTest
         assertTrue(tokens.get(it++).type == TokenType.BREAK);
         assertTrue(tokens.get(it++).type == TokenType.SEMICOLON);
         assertTrue(tokens.get(it++).type == TokenType.CURLY_CLOSE);
+
+        assertTrue(it == tokens.size());
+
     }
 
     @Test
@@ -202,19 +206,71 @@ public class ScannerTest
     @Test
     public void checkWhiteSkipper()
     {
+        String inputText = "      \nabc";
 
+        InputManager inputManager = new InputManager();
+        inputManager.readText(inputText);
+
+        Scanner scanner = new Scanner();
+        scanner.skipWhiteChars(inputManager);
+
+        assertTrue(inputManager.peekNext() == 'a');
     }
 
     @Test
     public void checkSingleLineCommentSkipper()
     {
+        String inputText = "//abc\ndef";
 
+        InputManager inputManager = new InputManager();
+        inputManager.readText(inputText);
+
+        Scanner scanner = new Scanner();
+        scanner.skipSingleLineComment(inputManager);
+
+        assertTrue(inputManager.peekNext() == 'd');
     }
 
     @Test
     public void checkMultiLineCommentSkipper()
     {
+        String inputText = "/*abc\ndef*/ghi";
 
+        InputManager inputManager = new InputManager();
+        inputManager.readText(inputText);
+
+        Scanner scanner = new Scanner();
+        scanner.skipMultiLineComment(inputManager);
+
+        assertTrue(inputManager.peekNext() == 'g');
+    }
+
+    @Test
+    public void checkSingleCommentNestedInMulti()
+    {
+        String inputText = "/*abc\n//def*/ghi";
+
+        InputManager inputManager = new InputManager();
+        inputManager.readText(inputText);
+
+        Scanner scanner = new Scanner();
+        scanner.skipComments(inputManager);
+
+        assertTrue(inputManager.peekNext() == 'g');
+    }
+
+    @Test
+    public void checkMultiCommentNestedInSingle()
+    {
+        String inputText = "//abc/*def\nghi*/jkl";
+
+        InputManager inputManager = new InputManager();
+        inputManager.readText(inputText);
+
+        Scanner scanner = new Scanner();
+        scanner.skipComments(inputManager);
+
+        assertTrue(inputManager.peekNext() == 'g');
     }
 
     private boolean checkKeyword(String keyword)

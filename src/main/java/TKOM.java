@@ -6,7 +6,7 @@ public class TKOM
     {
         String example = "void main ()\n" +
                 "{\n" +
-                "     int var = 5004; //this is the first line\n" +
+                "int var = 5004; //this is the first line\n" +
                 "     //this 2nd line\n" +
                 "     float a = (0.5+var) +-15;/*middle comment*/\n" +
                 "     for (int i = 0; i < 12; /*and*/ i = i+1) t\n" +
