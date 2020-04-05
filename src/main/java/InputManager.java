@@ -73,22 +73,22 @@ public class InputManager implements IInputManager
         return result;
     }
 
-    public char peekPrev()
-    {
-        cursor--;
-        char result = peekNext();
-        cursor++;
+//    public char peekPrev()
+//    {
+//        cursor--;
+//        char result = peekNext();
+//        cursor++;
+//
+//        return result;
+//    }
 
-        return result;
-    }
-
-    public void unget()
-    {
-        if (cursor == 0)
-            throw new IndexOutOfBoundsException("Trying unget() at first character");
-
-        cursor--;
-    }
+//    public void unget()
+//    {
+//        if (cursor == 0)
+//            throw new IndexOutOfBoundsException("Trying unget() at first character");
+//
+//        cursor--;
+//    }
 
     public String getLine(int lineNum)
     {

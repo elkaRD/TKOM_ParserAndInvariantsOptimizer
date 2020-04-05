@@ -24,6 +24,6 @@ public class TKOM
         input.readText(example);
 
         Scanner scanner = new Scanner();
-        scanner.parseTokens(input);
+        scanner.parseTokens(input, null);
     }
 }

@@ -5,8 +5,8 @@ public interface IInputManager
      char getNext();
      char peekNext();
      char peekNext(int ahead);
-     char peekPrev();
-     void unget();
+     //char peekPrev();
+     //void unget();
      String getLine(int lineNum);
      CharPos getCurrentPosition();
 }

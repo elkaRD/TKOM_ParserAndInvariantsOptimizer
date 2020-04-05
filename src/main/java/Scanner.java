@@ -21,7 +21,7 @@ public class Scanner implements IScanner
 
     private boolean errorFlag;
 
-    public void parseTokens(IInputManager inputManager)
+    public void parseTokens(IInputManager inputManager, IParser parser)
     {
         errorFlag = false;
 
@@ -35,6 +35,10 @@ public class Scanner implements IScanner
                 ErrorHandler.getInstance().displayError("Aborting lexer work due to found error");
                 break;
             }
+
+            //TODO: temp solution; update when writing parser
+            if (parser != null)
+                parser.readToken(token);
         }
     }
 
@@ -85,21 +89,22 @@ public class Scanner implements IScanner
             }
             else
             {
-                Token createdToken = createToken(prevState, curTokenStr, tokenPos);
-
-                if (createdToken == null)
-                {
-                    ErrorHandler.getInstance().displayErrorLine(tokenPos, "Cannot recognize token");
-                    errorFlag = true;
-                }
-
-                return createdToken;
+                curState = State.INVALID;
+                break;
             }
 
             prevState = curState;
         }
 
-        return null;
+        Token createdToken = createToken(prevState, curTokenStr, tokenPos);
+
+        if (createdToken == null)
+        {
+            ErrorHandler.getInstance().displayErrorLine(tokenPos, "Cannot recognize token");
+            errorFlag = true;
+        }
+
+        return createdToken;
     }
     
     private State handleBegin(char nextChar)
@@ -177,7 +182,7 @@ public class Scanner implements IScanner
     
     private boolean skipWhiteCharsAndComments(IInputManager inputManager, boolean skipWhite, boolean skipComments)
     {
-        boolean skipped = false;
+        boolean skipped;
         do {
             skipped = false;
             if (skipWhite)
@@ -187,10 +192,7 @@ public class Scanner implements IScanner
         }
         while (skipped);
 
-        if (!inputManager.isAvailableChar())
-            return false;
-
-        return true;
+        return inputManager.isAvailableChar();
     }
     
     private Token createToken(State prevState, String curTokenStr, CharPos tokenPos)

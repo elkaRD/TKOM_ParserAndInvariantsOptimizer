@@ -1,4 +1,4 @@
 public interface IScanner
 {
-    void parseTokens(IInputManager inputManager);
+    void parseTokens(IInputManager inputManager, IParser parser);
 }
