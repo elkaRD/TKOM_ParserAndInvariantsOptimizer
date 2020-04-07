@@ -45,13 +45,13 @@ public class InputManager implements IInputManager
     {
         char result = peekNext();
 
+        cursor++;
+        posInLine++;
         if (isNewLine(result))
         {
             posInLine = 0;
             lineIndex++;
         }
-        cursor++;
-        posInLine++;
 
         return result;
     }
@@ -73,29 +73,12 @@ public class InputManager implements IInputManager
         return result;
     }
 
-//    public char peekPrev()
-//    {
-//        cursor--;
-//        char result = peekNext();
-//        cursor++;
-//
-//        return result;
-//    }
-
-//    public void unget()
-//    {
-//        if (cursor == 0)
-//            throw new IndexOutOfBoundsException("Trying unget() at first character");
-//
-//        cursor--;
-//    }
-
     public String getLine(int lineNum)
     {
         if (lineNum+1 < linesBeginnings.size())
-            return plainText.substring(linesBeginnings.get(lineNum), linesBeginnings.get(lineNum+1));
+            return plainText.substring(linesBeginnings.get(lineNum) + 1, linesBeginnings.get(lineNum+1));
 
-        return plainText.substring(linesBeginnings.get(lineNum));
+        return plainText.substring(linesBeginnings.get(lineNum) + 1);
     }
 
     public CharPos getCurrentPosition()
@@ -111,7 +94,7 @@ public class InputManager implements IInputManager
     private void detectNewLines()
     {
         linesBeginnings.clear();
-        linesBeginnings.put(0, 0);
+        linesBeginnings.put(0, -1);
         int linesCounter = 1;
 
         for (int i = 0; i < plainText.length(); i++)

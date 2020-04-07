@@ -11,13 +11,33 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ScannerTest
 {
     @Test
-    public void checkIdDetection()
+    public void checkIdDetection1()
     {
         Token token = getFirstToken("abcd");
         assertTrue(token.type == TokenType.ID);
         assertTrue(token instanceof TokenId);
         TokenId tokenId = (TokenId) token;
         assertTrue(tokenId.value.equals("abcd"));
+    }
+
+    @Test
+    public void checkIdDetection2()
+    {
+        Token token = getFirstToken("abcd123");
+        assertTrue(token.type == TokenType.ID);
+        assertTrue(token instanceof TokenId);
+        TokenId tokenId = (TokenId) token;
+        assertTrue(tokenId.value.equals("abcd123"));
+    }
+
+    @Test
+    public void checkIdDetection3()
+    {
+        Token token = getFirstToken("abcd321ght");
+        assertTrue(token.type == TokenType.ID);
+        assertTrue(token instanceof TokenId);
+        TokenId tokenId = (TokenId) token;
+        assertTrue(tokenId.value.equals("abcd321ght"));
     }
 
     @Test
@@ -122,7 +142,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkTokensDetection()
+    public void checkTokensDetection1()
     {
         String inputText = "void main ()                \n" +
                 "{                                      \n" +
@@ -193,6 +213,19 @@ public class ScannerTest
     }
 
     @Test
+    public void checkTokensDetection2()
+    {
+        String inputText = "123.456.789abc";
+
+        Vector<Token> tokens = getTokens(inputText);
+        int it = 0;
+        //void main ()
+        assertTrue(tokens.get(it++).type == TokenType.NUM_FLOAT);
+        assertTrue(tokens.get(it++).type == TokenType.NUM_FLOAT);
+        assertTrue(tokens.get(it++).type == TokenType.ID);
+    }
+
+    @Test
     public void checkErrorDetection1()
     {
         CharPos errorPos = getErrorPos("#$%$#");
@@ -208,6 +241,15 @@ public class ScannerTest
 
         assertTrue(errorPos != null);
         assertTrue(errorPos.cursorPos == 3);
+    }
+
+    @Test
+    public void checkErrorDetection3()
+    {
+        CharPos errorPos = getErrorPos("abcd.abc");
+
+        assertTrue(errorPos != null);
+        assertTrue(errorPos.cursorPos == 4);
     }
 
     @Test

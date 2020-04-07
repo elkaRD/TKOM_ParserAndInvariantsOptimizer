@@ -142,7 +142,7 @@ public class Scanner implements IScanner
 
     private State handleId(char nextChar)
     {
-        if (!isAlpha(nextChar)) {
+        if (!isAlphaNumeric(nextChar)) {
             return State.INVALID;
         }
 

@@ -26,11 +26,16 @@ public class CharPos
     {
         String result = inputManager.getLine(lineIndex) + '\n';
 
-        for (int i = 0; i < posInLine-1; i++)
+        for (int i = 0; i < posInLine; i++)
             result += ' ';
         for (int i = 0; i < lenght; i++)
             result += '^';
 
         return result;
+    }
+
+    public String toString()
+    {
+        return "[" + cursorPos + "] " + "(" + lineIndex + ", " + posInLine + ")";
     }
 }
