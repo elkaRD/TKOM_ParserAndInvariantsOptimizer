@@ -79,29 +79,39 @@ public class ReservedTokens
 
     private void fillTokenAttrs()
     {
-        tokenAttrs.put("+", EnumSet.of(TokenAttr.SUM_OPERATOR));
-        tokenAttrs.put("-", EnumSet.of(TokenAttr.SUM_OPERATOR));
+        for (String token : tokenTypes.keySet())
+            tokenAttrs.put(token, EnumSet.noneOf(TokenAttr.class));
+        
+        tokenAttrs.get("+").add(TokenAttr.SUM_OPERATOR);
+        tokenAttrs.get("-").add(TokenAttr.SUM_OPERATOR);
 
-        tokenAttrs.put("*", EnumSet.of(TokenAttr.MUL_OPERATOR));
-        tokenAttrs.put("/", EnumSet.of(TokenAttr.MUL_OPERATOR));
+        tokenAttrs.get("*").add(TokenAttr.MUL_OPERATOR);
+        tokenAttrs.get("/").add(TokenAttr.MUL_OPERATOR);
 
-        tokenAttrs.put("&&", EnumSet.of(TokenAttr.AND_OPERATOR));
-        tokenAttrs.put("||", EnumSet.of(TokenAttr.OR_OPERATOR));
+        tokenAttrs.get("&&").add(TokenAttr.AND_OPERATOR);
+        tokenAttrs.get("||").add(TokenAttr.OR_OPERATOR);
 
-        tokenAttrs.put("<", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
-        tokenAttrs.put(">", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
-        tokenAttrs.put("<=", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
-        tokenAttrs.put(">=", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
+        tokenAttrs.get("<").add(TokenAttr.RELATIONAL_OPERATOR);
+        tokenAttrs.get(">").add(TokenAttr.RELATIONAL_OPERATOR);
+        tokenAttrs.get("<=").add(TokenAttr.RELATIONAL_OPERATOR);
+        tokenAttrs.get(">=").add(TokenAttr.RELATIONAL_OPERATOR);
 
-        tokenAttrs.put("<=", EnumSet.of(TokenAttr.EQUAL_OPERATOR));
-        tokenAttrs.put(">=", EnumSet.of(TokenAttr.EQUAL_OPERATOR));
+        tokenAttrs.get("<=").add(TokenAttr.EQUAL_OPERATOR);
+        tokenAttrs.get(">=").add(TokenAttr.EQUAL_OPERATOR);
 
-        tokenAttrs.put("int", EnumSet.of(TokenAttr.VAR_TYPE));
-        tokenAttrs.put("float", EnumSet.of(TokenAttr.VAR_TYPE));
-        tokenAttrs.put("bool", EnumSet.of(TokenAttr.VAR_TYPE));
+        tokenAttrs.get("int").add(TokenAttr.VAR_TYPE);
+        tokenAttrs.get("float").add(TokenAttr.VAR_TYPE);
+        tokenAttrs.get("bool").add(TokenAttr.VAR_TYPE);
 
-        tokenAttrs.put("true", EnumSet.of(TokenAttr.BOOL_VAL));
-        tokenAttrs.put("false", EnumSet.of(TokenAttr.BOOL_VAL));
+        tokenAttrs.get("true").add(TokenAttr.BOOL_VAL);
+        tokenAttrs.get("false").add(TokenAttr.BOOL_VAL);
+
+        tokenAttrs.get("if").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("for").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("while").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("return").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("break").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("continue").add(TokenAttr.STATEMENT);
     }
 
     public Token recognizeReservedToken(String tokenStr)

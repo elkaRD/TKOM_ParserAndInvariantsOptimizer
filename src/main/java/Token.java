@@ -20,5 +20,5 @@ public class Token
 
     public TokenType type = TokenType.INVALID;
     public CharPos tokenPos;
-    public EnumSet<TokenAttr> detailedType;
+    public EnumSet<TokenAttr> detailedType = EnumSet.noneOf(TokenAttr.class);
 }

@@ -8,5 +8,7 @@ public enum TokenAttr
     EQUAL_OPERATOR,
 
     VAR_TYPE,
-    BOOL_VAL
+    BOOL_VAL,
+
+    STATEMENT
 }

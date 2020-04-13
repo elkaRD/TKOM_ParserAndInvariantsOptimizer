@@ -55,12 +55,14 @@ public class Scanner implements IScanner
         }
     }
 
-    private Token parseNextToken(IInputManager inputManager)
+    public Token parseNextToken(IInputManager inputManager)
     {
         State curState = State.BEGIN;
         State prevState = State.BEGIN;
         String curTokenStr = "";
         CharPos tokenPos = inputManager.getCurrentPosition();
+
+        skipWhiteCharsAndComments(inputManager, true, true);
 
         while (skipWhiteCharsAndComments(inputManager, false, true))
         {
