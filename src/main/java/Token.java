@@ -1,3 +1,5 @@
+import java.util.EnumSet;
+
 public class Token
 {
     public Token()
@@ -18,4 +20,5 @@ public class Token
 
     public TokenType type = TokenType.INVALID;
     public CharPos tokenPos;
+    public EnumSet<TokenAttr> detailedType;
 }

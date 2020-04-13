@@ -1,7 +1,15 @@
 import jdk.internal.util.xml.impl.Input;
 
+import java.util.EnumSet;
+
 public class TKOM
 {
+    enum detailed
+    {
+        first,
+        second
+    }
+
     public static void main(String[] args)
     {
         String example = "void  main    ()\n" +
@@ -25,5 +33,15 @@ public class TKOM
 
         Scanner scanner = new Scanner();
         scanner.parseTokens(input, null);
+
+        EnumSet<detailed> test = EnumSet.of(detailed.second, detailed.first);
+        if (test.contains(detailed.first))
+        {
+            System.out.println("found first");
+        }
+        if (test.contains(detailed.second))
+        {
+            System.out.println("found second");
+        }
     }
 }

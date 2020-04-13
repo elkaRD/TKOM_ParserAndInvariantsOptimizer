@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,79 +11,109 @@ public class ReservedTokens
         return instance;
     }
 
-    private Map<String, TokenType> reservedTokens = new HashMap<>();
-//    private ArrayList<String> multiSpecialCharacters = new ArrayList<>();
+    private Map<String, TokenType> tokenTypes = new HashMap<>();
+    private Map<String, EnumSet<TokenAttr>> tokenAttrs = new HashMap<>();
 
     private ReservedTokens()
     {
-        reservedTokens.put("void", TokenType.VOID);
-        reservedTokens.put("(", TokenType.PARENTHESES_OPEN);
-        reservedTokens.put(")", TokenType.PARENTHESES_CLOSE);
-        reservedTokens.put("{", TokenType.CURLY_OPEN);
-        reservedTokens.put("}", TokenType.CURLY_CLOSE);
-        reservedTokens.put("[", TokenType.SQUARE_OPEN);
-        reservedTokens.put("]", TokenType.SQUARE_CLOSE);
-        reservedTokens.put(";", TokenType.SEMICOLON);
-        reservedTokens.put("if", TokenType.IF);
-        reservedTokens.put("else", TokenType.ELSE);
-        reservedTokens.put("while", TokenType.WHILE);
-        reservedTokens.put("for", TokenType.FOR);
-        reservedTokens.put(",", TokenType.COMMA);
-        reservedTokens.put("return", TokenType.RETURN);
+        fillTokenTypes();
+        fillTokenAttrs();
+    }
 
-        reservedTokens.put("=", TokenType.ASSIGN);
+    private void fillTokenTypes()
+    {
+        tokenTypes.put("void", TokenType.VOID);
+        tokenTypes.put("(", TokenType.PARENTHESES_OPEN);
+        tokenTypes.put(")", TokenType.PARENTHESES_CLOSE);
+        tokenTypes.put("{", TokenType.CURLY_OPEN);
+        tokenTypes.put("}", TokenType.CURLY_CLOSE);
+        tokenTypes.put("[", TokenType.SQUARE_OPEN);
+        tokenTypes.put("]", TokenType.SQUARE_CLOSE);
+        tokenTypes.put(";", TokenType.SEMICOLON);
+        tokenTypes.put("if", TokenType.IF);
+        tokenTypes.put("else", TokenType.ELSE);
+        tokenTypes.put("while", TokenType.WHILE);
+        tokenTypes.put("for", TokenType.FOR);
+        tokenTypes.put(",", TokenType.COMMA);
+        tokenTypes.put("return", TokenType.RETURN);
+
+        tokenTypes.put("=", TokenType.ASSIGN);
 
         //mathematical operators
-        reservedTokens.put("+", TokenType.ADD);
-        reservedTokens.put("-", TokenType.SUB);
-        reservedTokens.put("/", TokenType.DIV);
-        reservedTokens.put("*", TokenType.MUL);
+        //  addOperator
+        tokenTypes.put("+", TokenType.ADD);
+        tokenTypes.put("-", TokenType.SUB);
+        //  mulOperator
+        tokenTypes.put("/", TokenType.DIV);
+        tokenTypes.put("*", TokenType.MUL);
 
         //logical operators
-        reservedTokens.put("&&", TokenType.AND);
-        reservedTokens.put("||", TokenType.OR);
-        reservedTokens.put(">", TokenType.GREATER);
-        reservedTokens.put(">=", TokenType.GREATER_EQUAL);
-        reservedTokens.put("<", TokenType.LESS);
-        reservedTokens.put("<=", TokenType.LESS_EQUAL);
-        reservedTokens.put("==", TokenType.EQUAL);
-        reservedTokens.put("!=", TokenType.NOT_EQUAL);
-        reservedTokens.put("!", TokenType.NEG);
+        //  andOperator
+        tokenTypes.put("&&", TokenType.AND);
+        //  orOperator
+        tokenTypes.put("||", TokenType.OR);
+        //  relationalOperator
+        tokenTypes.put(">", TokenType.GREATER);
+        tokenTypes.put(">=", TokenType.GREATER_EQUAL);
+        tokenTypes.put("<", TokenType.LESS);
+        tokenTypes.put("<=", TokenType.LESS_EQUAL);
+        //  equalOperator
+        tokenTypes.put("==", TokenType.EQUAL);
+        tokenTypes.put("!=", TokenType.NOT_EQUAL);
+        //  negOperator - mask is not needed
+        tokenTypes.put("!", TokenType.NEG);
 
         //variable types
-        reservedTokens.put("int", TokenType.INT);
-        reservedTokens.put("float", TokenType.FLOAT);
-        reservedTokens.put("bool", TokenType.BOOL);
+        tokenTypes.put("int", TokenType.INT);
+        tokenTypes.put("float", TokenType.FLOAT);
+        tokenTypes.put("bool", TokenType.BOOL);
 
         //boolean values
-        reservedTokens.put("true", TokenType.TRUE);
-        reservedTokens.put("false", TokenType.FALSE);
+        tokenTypes.put("true", TokenType.TRUE);
+        tokenTypes.put("false", TokenType.FALSE);
 
         //loop control keywords
-        reservedTokens.put("continue", TokenType.CONTINUE);
-        reservedTokens.put("break", TokenType.BREAK);
-
-//        multiSpecialCharacters.add("&&");
-//        multiSpecialCharacters.add("||");
-//        multiSpecialCharacters.add(">=");
-//        multiSpecialCharacters.add("<=");
-//        multiSpecialCharacters.add("==");
-//        multiSpecialCharacters.add("!=");
+        tokenTypes.put("continue", TokenType.CONTINUE);
+        tokenTypes.put("break", TokenType.BREAK);
     }
 
-    public TokenType recognizeReservedToken(String tokenStr)
+    private void fillTokenAttrs()
     {
-        if (!reservedTokens.containsKey(tokenStr))
-            return TokenType.INVALID;
+        tokenAttrs.put("+", EnumSet.of(TokenAttr.SUM_OPERATOR));
+        tokenAttrs.put("-", EnumSet.of(TokenAttr.SUM_OPERATOR));
 
-        return reservedTokens.get(tokenStr);
+        tokenAttrs.put("*", EnumSet.of(TokenAttr.MUL_OPERATOR));
+        tokenAttrs.put("/", EnumSet.of(TokenAttr.MUL_OPERATOR));
+
+        tokenAttrs.put("&&", EnumSet.of(TokenAttr.AND_OPERATOR));
+        tokenAttrs.put("||", EnumSet.of(TokenAttr.OR_OPERATOR));
+
+        tokenAttrs.put("<", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
+        tokenAttrs.put(">", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
+        tokenAttrs.put("<=", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
+        tokenAttrs.put(">=", EnumSet.of(TokenAttr.RELATIONAL_OPERATOR));
+
+        tokenAttrs.put("<=", EnumSet.of(TokenAttr.EQUAL_OPERATOR));
+        tokenAttrs.put(">=", EnumSet.of(TokenAttr.EQUAL_OPERATOR));
+
+        tokenAttrs.put("int", EnumSet.of(TokenAttr.VAR_TYPE));
+        tokenAttrs.put("float", EnumSet.of(TokenAttr.VAR_TYPE));
+        tokenAttrs.put("bool", EnumSet.of(TokenAttr.VAR_TYPE));
+
+        tokenAttrs.put("true", EnumSet.of(TokenAttr.BOOL_VAL));
+        tokenAttrs.put("false", EnumSet.of(TokenAttr.BOOL_VAL));
     }
 
-//    public boolean existTokensStartingWithSpecial(String special)
-//    {
-//        for (String token : multiSpecialCharacters)
-//        {
-//
-//        }
-//    }
+    public Token recognizeReservedToken(String tokenStr)
+    {
+        if (!tokenTypes.containsKey(tokenStr))
+            return null;
+
+        Token token = new Token (tokenTypes.get(tokenStr));
+
+        if (tokenAttrs.containsKey(tokenStr))
+            token.detailedType = tokenAttrs.get(tokenStr);
+
+        return token;
+    }
 }

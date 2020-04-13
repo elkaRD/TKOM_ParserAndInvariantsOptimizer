@@ -189,7 +189,7 @@ public class Scanner implements IScanner
 
     private State handleSpecial(char nextChar, String curTokenStr)
     {
-        if (isSpecial(nextChar) && ReservedTokens.getInstance().recognizeReservedToken(curTokenStr + nextChar) != TokenType.INVALID) {
+        if (isSpecial(nextChar) && ReservedTokens.getInstance().recognizeReservedToken(curTokenStr + nextChar) != null) {
             return State.SPECIAL;
         }
 
@@ -216,15 +216,20 @@ public class Scanner implements IScanner
         if (!isAcceptingState(prevState))
             return null;
 
-        TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
+//        TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
+//
+//        Token generatedToken = reserved == TokenType.INVALID ?
+//                generateToken(prevState, curTokenStr) :
+//                generateToken(reserved);
 
-        Token generatedToken = reserved == TokenType.INVALID ?
-                generateToken(prevState, curTokenStr) :
-                generateToken(reserved);
+        Token generatedToken = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
+
+        if (generatedToken == null)
+            generatedToken = generateToken(prevState, curTokenStr);
 
         generatedToken.tokenPos = tokenPos;
 
-        System.out.println(curTokenStr + "\t\t" + generatedToken.type);
+        //System.out.println(curTokenStr + "\t\t" + generatedToken.type);
 
         return generatedToken;
     }
@@ -243,10 +248,10 @@ public class Scanner implements IScanner
         return false;
     }
 
-    private Token generateToken(TokenType predefinedType)
-    {
-        return new Token(predefinedType);
-    }
+//    private Token generateToken(TokenType predefinedType)
+//    {
+//        return new Token(predefinedType);
+//    }
 
     private Token generateToken(State state, String tokenStr)
     {
