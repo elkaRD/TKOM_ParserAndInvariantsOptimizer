@@ -16,7 +16,7 @@ public class TKOM
 //                "{\n" +
 //                "int var = 5004; //this is the first line\n" +
 //                "     //this 2nd line\n" +
-//                "     float a = (0.5+var) +-15;/*middle comment*/\n" +
+//                "     float a = (0.5+var) +15;/*middle comment*/\n" +
 //                "     for (int i = 0; i < 12; /*and*/ i = i+1) t\n" +
 //                "   hdaksajdhkashjd$%$#WR#Wdfe4 343242.432432.4323..\n" +
 //                "     if (var >= a && i != a) {} else {bool cond = false;}/*hdfjksdjd\n" +
@@ -28,7 +28,7 @@ public class TKOM
 
 //        String example = "abc//def";
 
-        String example = "void main () {}";
+        String example = "void main () {for (int i = 0; i < 12; /*and*/ i = i+1)int x = 0;}";
 
         InputManager input = new InputManager();
         input.readText(example);

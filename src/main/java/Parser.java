@@ -156,7 +156,7 @@ public class Parser implements IParser
     {
         getOptionalToken(TokenType.NEG);
 
-        if (getOptionalToken(TokenAttr.BOOL_VAL))
+        if (getOptionalToken(TokenAttr.VAR_VAL))
         {
 
         }
@@ -167,7 +167,7 @@ public class Parser implements IParser
         else
         {
             getToken(TokenType.PARENTHESES_OPEN);
-            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN))
+            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN)) //TODO: there's going to be a problem with assigning values to array's elements
             {
                 parseAssignVar();
             }
@@ -212,7 +212,14 @@ public class Parser implements IParser
         else
         {
             getToken(TokenType.PARENTHESES_OPEN);
-
+            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN))  //TODO: there's going to be a problem with assigning values to array's elements
+            {
+                parseAssignVar();
+            }
+            else
+            {
+                parseExpression();
+            }
             getToken(TokenType.PARENTHESES_CLOSE);
         }
     }
@@ -221,11 +228,19 @@ public class Parser implements IParser
     {
         getToken(TokenType.FOR);
         getToken(TokenType.PARENTHESES_OPEN);
-        parseExpression();
+        if (!checkToken(TokenType.SEMICOLON))
+        {
+            if (checkToken(TokenAttr.VAR_TYPE))
+                parseInitVar();
+            else
+                parseAssignVar();
+        }
         getToken(TokenType.SEMICOLON);
-        parseLogicalStatement();
+        if (!checkToken(TokenType.SEMICOLON))
+            parseLogicalStatement();
         getToken(TokenType.SEMICOLON);
-        parseExpression();
+        if (!checkToken(TokenType.PARENTHESES_CLOSE))
+            parseAssignVar();
         getToken(TokenType.PARENTHESES_CLOSE);
         parseBlock();
     }
@@ -246,7 +261,7 @@ public class Parser implements IParser
 
         if (getOptionalToken(TokenType.ASSIGN))
         {
-            parseVarValue();
+            parseExpression();
         }
     }
 

@@ -115,6 +115,9 @@ public class ReservedTokens
         tokenAttrs.get("return").add(TokenAttr.STATEMENT);
         tokenAttrs.get("break").add(TokenAttr.STATEMENT);
         tokenAttrs.get("continue").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("int").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("float").add(TokenAttr.STATEMENT);
+        tokenAttrs.get("bool").add(TokenAttr.STATEMENT);
     }
 
     public Token recognizeReservedToken(String tokenStr)
