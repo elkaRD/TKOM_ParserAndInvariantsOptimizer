@@ -49,11 +49,7 @@ public class Parser implements IParser
 
     private void parseBlock() throws Exception
     {
-        if (checkToken(TokenAttr.STATEMENT))
-        {
-            parseStatement();
-        }
-        else if (getOptionalToken(TokenType.CURLY_OPEN))
+        if (getOptionalToken(TokenType.CURLY_OPEN))
         {
             while (true)
             {
@@ -69,7 +65,7 @@ public class Parser implements IParser
         }
         else
         {
-            raiseError(peekToken(), TokenAttr.STATEMENT);
+            parseStatement();
         }
     }
 

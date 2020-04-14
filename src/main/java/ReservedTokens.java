@@ -96,8 +96,8 @@ public class ReservedTokens
         tokenAttrs.get("<=").add(TokenAttr.RELATIONAL_OPERATOR);
         tokenAttrs.get(">=").add(TokenAttr.RELATIONAL_OPERATOR);
 
-        tokenAttrs.get("<=").add(TokenAttr.EQUAL_OPERATOR);
-        tokenAttrs.get(">=").add(TokenAttr.EQUAL_OPERATOR);
+        tokenAttrs.get("==").add(TokenAttr.EQUAL_OPERATOR);
+        tokenAttrs.get("!=").add(TokenAttr.EQUAL_OPERATOR);
 
         tokenAttrs.get("int").add(TokenAttr.VAR_TYPE);
         tokenAttrs.get("float").add(TokenAttr.VAR_TYPE);

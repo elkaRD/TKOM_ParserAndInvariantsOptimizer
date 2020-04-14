@@ -5,7 +5,7 @@ public enum TokenAttr
     AND_OPERATOR,
     OR_OPERATOR,
     RELATIONAL_OPERATOR,
-    EQUAL_OPERATOR,
+    EQUAL_OPERATOR, //TODO: change name because it's the same in TokenType enum
 
     VAR_TYPE,
     BOOL_VAL,
