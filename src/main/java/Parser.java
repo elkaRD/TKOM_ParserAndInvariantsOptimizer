@@ -1,3 +1,7 @@
+import com.sun.org.apache.xpath.internal.operations.And;
+import com.sun.tools.classfile.Annotation;
+import com.sun.tools.corba.se.idl.constExpr.Minus;
+
 public class Parser implements IParser
 {
     public void readToken(Token token)
@@ -25,10 +29,10 @@ public class Parser implements IParser
 
     private void parseProgram() throws Exception
     {
-        while (checkNextToken(TokenAttr.VAR_TYPE))
+        while (checkToken(TokenAttr.VAR_TYPE))
         {
             parseInitVar();
-            checkToken(TokenType.SEMICOLON);
+            getToken(TokenType.SEMICOLON);
         }
 
         parseDefFunction();
@@ -36,28 +40,28 @@ public class Parser implements IParser
 
     private void parseDefFunction() throws Exception
     {
-        checkToken(TokenType.VOID);
-        checkToken(TokenType.ID);
-        checkToken(TokenType.PARENTHESES_OPEN);
-        checkToken(TokenType.PARENTHESES_CLOSE);
+        getToken(TokenType.VOID);
+        getToken(TokenType.ID);
+        getToken(TokenType.PARENTHESES_OPEN);
+        getToken(TokenType.PARENTHESES_CLOSE);
         parseBlock();
     }
 
     private void parseBlock() throws Exception
     {
-        if (checkNextToken(TokenAttr.STATEMENT))
+        if (checkToken(TokenAttr.STATEMENT))
         {
             parseStatement();
         }
-        else if (checkOptionalToken(TokenType.CURLY_OPEN))
+        else if (getOptionalToken(TokenType.CURLY_OPEN))
         {
             while (true)
             {
-                if (checkNextToken(TokenType.CURLY_OPEN))
+                if (checkToken(TokenType.CURLY_OPEN))
                     parseBlock();
-                else if (checkNextToken(TokenAttr.STATEMENT))
+                else if (checkToken(TokenAttr.STATEMENT))
                     parseStatement();
-                else if (checkOptionalToken(TokenType.CURLY_CLOSE))
+                else if (getOptionalToken(TokenType.CURLY_CLOSE))
                     break;
                 else
                     raiseError(peekToken(), TokenType.CURLY_CLOSE);
@@ -71,51 +75,176 @@ public class Parser implements IParser
 
     private void parseStatement() throws Exception
     {
-        if (checkNextToken(TokenType.IF))
+        if (checkToken(TokenType.IF))
             parseCondition();
-        else if (checkNextToken(TokenType.FOR))
+        else if (checkToken(TokenType.FOR))
             parseForLoop();
-        else if (checkNextToken(TokenType.WHILE))
+        else if (checkToken(TokenType.WHILE))
             parseWhileLoop();
-        else if (checkNextToken(TokenAttr.VAR_TYPE))
+        else if (checkToken(TokenAttr.VAR_TYPE))
         {
             parseInitVar();
-            checkToken(TokenType.SEMICOLON);
+            getToken(TokenType.SEMICOLON);
         }
-        else if (checkNextToken(TokenType.ID))
+        else if (checkToken(TokenType.ID))
         {
             parseAssignVar();
-            checkToken(TokenType.SEMICOLON);
+            getToken(TokenType.SEMICOLON);
         }
-        else if (checkToken(TokenType.RETURN))
-            checkToken(TokenType.SEMICOLON);
-        else if (checkToken(TokenType.CONTINUE))
-            checkToken(TokenType.SEMICOLON);
-        else if (checkToken(TokenType.BREAK))
-            checkToken(TokenType.SEMICOLON);
+        else if (getToken(TokenType.RETURN))
+            getToken(TokenType.SEMICOLON);
+        else if (getToken(TokenType.CONTINUE))
+            getToken(TokenType.SEMICOLON);
+        else if (getToken(TokenType.BREAK))
+            getToken(TokenType.SEMICOLON);
     }
 
     private void parseCondition() throws Exception
     {
+        getToken(TokenType.IF);
+        getToken(TokenType.PARENTHESES_OPEN);
+        parseLogicalStatement();
+        getToken(TokenType.PARENTHESES_CLOSE);
+        parseBlock();
+        if (getOptionalToken(TokenType.ELSE))
+        {
+            parseBlock();
+        }
+    }
 
+    private void parseLogicalStatement() throws Exception
+    {
+        parseAndCondition();
+
+        while (getOptionalToken(TokenAttr.OR_OPERATOR))
+        {
+            parseAndCondition();
+        }
+    }
+
+    private void parseAndCondition() throws Exception
+    {
+        parseEqualCondition();
+
+        while (getOptionalToken(TokenAttr.AND_OPERATOR))
+        {
+            parseEqualCondition();
+        }
+    }
+
+    private void parseEqualCondition() throws Exception
+    {
+        parseRelationalCondition();
+
+        while (getOptionalToken(TokenAttr.EQUAL_OPERATOR))
+        {
+            parseRelationalCondition();
+        }
+    }
+
+    private void parseRelationalCondition() throws Exception
+    {
+        parseLogicalParam();
+
+        while (getOptionalToken(TokenAttr.RELATIONAL_OPERATOR))
+        {
+            parseLogicalParam();
+        }
+    }
+
+    private void parseLogicalParam() throws Exception
+    {
+        getOptionalToken(TokenType.NEG);
+
+        if (getOptionalToken(TokenAttr.BOOL_VAL))
+        {
+
+        }
+        else if (checkToken(TokenType.ID))
+        {
+            parseVar();
+        }
+        else
+        {
+            getToken(TokenType.PARENTHESES_OPEN);
+            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN))
+            {
+                parseAssignVar();
+            }
+            else
+            {
+                parseExpression();
+            }
+            getToken(TokenType.PARENTHESES_CLOSE);
+        }
+    }
+
+    private void parseExpression() throws Exception
+    {
+        parseMultiExpression();
+
+        while (getOptionalToken(TokenAttr.SUM_OPERATOR))
+        {
+            parseMultiExpression();
+        }
+    }
+
+    private void parseMultiExpression() throws Exception
+    {
+        parseMultiParam();
+
+        while (getOptionalToken(TokenAttr.MUL_OPERATOR))
+        {
+            parseMultiParam();
+        }
+    }
+
+    private void parseMultiParam() throws Exception
+    {
+        if (checkToken(TokenType.ID))
+        {
+            parseVar();
+        }
+        else if (checkToken(TokenAttr.VAR_VAL))
+        {
+            parseVarValue();
+        }
+        else
+        {
+            getToken(TokenType.PARENTHESES_OPEN);
+
+            getToken(TokenType.PARENTHESES_CLOSE);
+        }
     }
 
     private void parseForLoop() throws Exception
     {
-
+        getToken(TokenType.FOR);
+        getToken(TokenType.PARENTHESES_OPEN);
+        parseExpression();
+        getToken(TokenType.SEMICOLON);
+        parseLogicalStatement();
+        getToken(TokenType.SEMICOLON);
+        parseExpression();
+        getToken(TokenType.PARENTHESES_CLOSE);
+        parseBlock();
     }
 
     private void parseWhileLoop() throws Exception
     {
-
+        getToken(TokenType.WHILE);
+        getToken(TokenType.PARENTHESES_OPEN);
+        parseLogicalStatement();
+        getToken(TokenType.PARENTHESES_CLOSE);
+        parseBlock();
     }
 
     private void parseInitVar() throws Exception
     {
-        checkToken(TokenAttr.VAR_TYPE);
+        getToken(TokenAttr.VAR_TYPE);
         parseVar();
 
-        if (checkOptionalToken(TokenType.ASSIGN))
+        if (getOptionalToken(TokenType.ASSIGN))
         {
             parseVarValue();
         }
@@ -123,17 +252,45 @@ public class Parser implements IParser
 
     private void parseAssignVar() throws Exception
     {
-
+        parseVar();
+        getToken(TokenType.ASSIGN);
+        parseExpression();
     }
 
     private void parseVar() throws Exception
     {
-
+        getToken(TokenType.ID);
+        if (getOptionalToken(TokenType.SQUARE_OPEN))
+        {
+            getToken(TokenType.NUM_INT);
+            getToken(TokenType.SQUARE_CLOSE);
+        }
     }
 
     private void parseVarValue() throws Exception
     {
+        if (getOptionalToken(TokenAttr.BOOL_VAL))
+        {
+        }
+        else if (getOptionalToken(TokenType.SUB))
+        {
+            if (getOptionalToken(TokenAttr.NUM_VAL))
+            {
 
+            }
+            else
+            {
+                raiseError(TokenAttr.NUM_VAL);
+            }
+        }
+        else if (getOptionalToken(TokenAttr.NUM_VAL))
+        {
+
+        }
+        else
+        {
+            raiseError(TokenAttr.NUM_VAL);
+        }
     }
 
     private Token curToken = null;
@@ -169,6 +326,16 @@ public class Parser implements IParser
         return result;
     }
 
+    private boolean checkToken(TokenAttr attr)
+    {
+        return peekToken().detailedType.contains(attr);
+    }
+
+    private boolean checkToken(TokenType type)
+    {
+        return peekToken().type == type;
+    }
+
     private boolean checkNextToken(TokenAttr attr)
     {
         return peekNextToken().detailedType.contains(attr);
@@ -176,10 +343,10 @@ public class Parser implements IParser
 
     private boolean checkNextToken(TokenType type)
     {
-        return peekNextToken().type != type;
+        return peekNextToken().type == type;
     }
 
-    private boolean checkOptionalToken(TokenAttr attr)
+    private boolean getOptionalToken(TokenAttr attr)
     {
         boolean result = peekToken().detailedType.contains(attr);
 
@@ -189,7 +356,7 @@ public class Parser implements IParser
         return result;
     }
 
-    private boolean checkOptionalToken(TokenType type)
+    private boolean getOptionalToken(TokenType type)
     {
         boolean result = peekToken().type == type;
 
@@ -199,7 +366,7 @@ public class Parser implements IParser
         return result;
     }
 
-    private boolean checkToken(TokenAttr attr) throws Exception
+    private boolean getToken(TokenAttr attr) throws Exception
     {
         Token token = getToken();
 
@@ -209,7 +376,7 @@ public class Parser implements IParser
         return true;
     }
 
-    private boolean checkToken(TokenType type) throws Exception
+    private boolean getToken(TokenType type) throws Exception
     {
         Token token = getToken();
 
@@ -219,15 +386,27 @@ public class Parser implements IParser
         return true;
     }
 
-//    private boolean checkToken(Token token, TokenAttr attr, String errorMsg)
+//    private boolean getToken(Token token, TokenAttr attr, String errorMsg)
 //    {
 //        boolean result = token.detailedType.contains(attr);
 //    }
 //
-//    private boolean checkToken(Token token, TokenType type, String errorMsg)
+//    private boolean getToken(Token token, TokenType type, String errorMsg)
 //    {
 //        return token.type == type;
 //    }
+
+    private void raiseError(TokenType expectedType) throws Exception
+    {
+        ErrorHandler.getInstance().displayErrorLine(curToken.tokenPos, "Expectged " + expectedType);
+        throw new Exception("Parser TokenType error");
+    }
+
+    private void raiseError(TokenAttr expectedAttr) throws Exception
+    {
+        ErrorHandler.getInstance().displayErrorLine(curToken.tokenPos, "Expectged " + expectedAttr);
+        throw new Exception("Parser TokenType error");
+    }
 
     private void raiseError(String msg)
     {

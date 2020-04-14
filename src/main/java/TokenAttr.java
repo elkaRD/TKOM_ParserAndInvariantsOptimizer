@@ -9,6 +9,8 @@ public enum TokenAttr
 
     VAR_TYPE,
     BOOL_VAL,
+    NUM_VAL,
+    VAR_VAL,
 
     STATEMENT
 }

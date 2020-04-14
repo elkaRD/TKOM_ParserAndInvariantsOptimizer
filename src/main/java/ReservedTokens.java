@@ -106,6 +106,9 @@ public class ReservedTokens
         tokenAttrs.get("true").add(TokenAttr.BOOL_VAL);
         tokenAttrs.get("false").add(TokenAttr.BOOL_VAL);
 
+        tokenAttrs.get("true").add(TokenAttr.VAR_VAL);
+        tokenAttrs.get("false").add(TokenAttr.VAR_VAL);
+
         tokenAttrs.get("if").add(TokenAttr.STATEMENT);
         tokenAttrs.get("for").add(TokenAttr.STATEMENT);
         tokenAttrs.get("while").add(TokenAttr.STATEMENT);
