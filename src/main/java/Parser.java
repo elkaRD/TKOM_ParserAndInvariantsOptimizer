@@ -12,19 +12,12 @@ public class Parser implements IParser
     private IScanner scanner;
     private IInputManager input;
 
-    public void parse(IInputManager inputManager)
+    public void parse(IInputManager inputManager) throws Exception
     {
         scanner = new Scanner();
         input = inputManager;
 
-        try
-        {
-            parseProgram();
-        }
-        catch (Exception e)
-        {
-
-        }
+        parseProgram();
     }
 
     private void parseProgram() throws Exception
@@ -87,11 +80,11 @@ public class Parser implements IParser
             parseAssignVar();
             getToken(TokenType.SEMICOLON);
         }
-        else if (getToken(TokenType.RETURN))
+        else if (getOptionalToken(TokenType.RETURN))
             getToken(TokenType.SEMICOLON);
-        else if (getToken(TokenType.CONTINUE))
+        else if (getOptionalToken(TokenType.CONTINUE))
             getToken(TokenType.SEMICOLON);
-        else if (getToken(TokenType.BREAK))
+        else if (getOptionalToken(TokenType.BREAK))
             getToken(TokenType.SEMICOLON);
     }
 
@@ -152,26 +145,32 @@ public class Parser implements IParser
     {
         getOptionalToken(TokenType.NEG);
 
-        if (getOptionalToken(TokenAttr.VAR_VAL))
+        //TODO: check if these lines need to be commented, we can try to parse these values
+//        if (getOptionalToken(TokenAttr.VAR_VAL))
+//        {
+//
+//        }
+//        else if (checkToken(TokenType.ID))
+//        {
+//            parseVar();
+//        }
+        /*else*/ if (checkToken(TokenType.PARENTHESES_OPEN))
         {
-
-        }
-        else if (checkToken(TokenType.ID))
-        {
-            parseVar();
+            getToken(TokenType.PARENTHESES_OPEN);
+//            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN)) //TODO: there's going to be a problem with assigning values to array's elements
+//            {
+//                parseAssignVar();
+//            }
+//            else
+//            {
+//                parseExpression();
+//            }
+            parseLogicalStatement();
+            getToken(TokenType.PARENTHESES_CLOSE);
         }
         else
         {
-            getToken(TokenType.PARENTHESES_OPEN);
-            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN)) //TODO: there's going to be a problem with assigning values to array's elements
-            {
-                parseAssignVar();
-            }
-            else
-            {
-                parseExpression();
-            }
-            getToken(TokenType.PARENTHESES_CLOSE);
+            parseExpression();
         }
     }
 
@@ -208,14 +207,15 @@ public class Parser implements IParser
         else
         {
             getToken(TokenType.PARENTHESES_OPEN);
-            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN))  //TODO: there's going to be a problem with assigning values to array's elements
-            {
-                parseAssignVar();
-            }
-            else
-            {
-                parseExpression();
-            }
+//            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN))  //TODO: there's going to be a problem with assigning values to array's elements
+//            {
+//                parseAssignVar();
+//            }
+//            else
+//            {
+//                parseExpression();
+//            }
+            parseExpression();
             getToken(TokenType.PARENTHESES_CLOSE);
         }
     }

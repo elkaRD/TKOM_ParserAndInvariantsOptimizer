@@ -4,6 +4,7 @@ public class TokenId extends Token
     {
         super(TokenType.ID);
         this.value = tokenStr;
+        this.detailedType.add(TokenAttr.STATEMENT);
     }
 
     public String value;
