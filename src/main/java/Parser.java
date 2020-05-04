@@ -1,6 +1,4 @@
-import com.sun.org.apache.xpath.internal.operations.And;
-import com.sun.tools.classfile.Annotation;
-import com.sun.tools.corba.se.idl.constExpr.Minus;
+import sun.util.resources.cldr.ig.LocaleNames_ig;
 
 public class Parser implements IParser
 {
@@ -17,39 +15,52 @@ public class Parser implements IParser
         scanner = new Scanner();
         input = inputManager;
 
-        parseProgram();
+        Program program = parseProgram();
     }
 
-    private void parseProgram() throws Exception
+    private Program parseProgram() throws Exception
     {
+        Program program = new Program();
+
         while (checkToken(TokenAttr.VAR_TYPE))
         {
-            parseInitVar();
+            program.addGlobalVar(parseInitVar());
             getToken(TokenType.SEMICOLON);
         }
 
-        parseDefFunction();
+        program.setMainFunction(parseDefFunction());
+
+        return program;
     }
 
-    private void parseDefFunction() throws Exception
+    private DefFunction parseDefFunction() throws Exception
     {
+        DefFunction function = new DefFunction();
+
         getToken(TokenType.VOID);
-        getToken(TokenType.ID);
+        Token id = getToken(TokenType.ID);
+        function.setMainFunction(((TokenId) id).value);
+
         getToken(TokenType.PARENTHESES_OPEN);
         getToken(TokenType.PARENTHESES_CLOSE);
-        parseBlock();
+
+        function.setMainBlock(parseBlock());
+
+        return function;
     }
 
-    private void parseBlock() throws Exception
+    private Block parseBlock() throws Exception
     {
+        Block block = new Block();
+
         if (getOptionalToken(TokenType.CURLY_OPEN))
         {
             while (true)
             {
                 if (checkToken(TokenType.CURLY_OPEN))
-                    parseBlock();
+                    block.addStatement(parseBlock());
                 else if (checkToken(TokenAttr.STATEMENT))
-                    parseStatement();
+                    block.addStatement(parseStatement());
                 else if (getOptionalToken(TokenType.CURLY_CLOSE))
                     break;
                 else
@@ -58,26 +69,32 @@ public class Parser implements IParser
         }
         else
         {
-            parseStatement();
+            block.addStatement(parseStatement());
         }
+
+        return block;
     }
 
-    private void parseStatement() throws Exception
+    private Statement parseStatement() throws Exception
     {
+        Statement statement = null;
+
+        //TODO: fix all statements (those without returning values)
+
         if (checkToken(TokenType.IF))
             parseCondition();
         else if (checkToken(TokenType.FOR))
-            parseForLoop();
+            statement = parseForLoop();
         else if (checkToken(TokenType.WHILE))
             parseWhileLoop();
         else if (checkToken(TokenAttr.VAR_TYPE))
         {
-            parseInitVar();
+            statement = parseInitVar();
             getToken(TokenType.SEMICOLON);
         }
         else if (checkToken(TokenType.ID))
         {
-            parseAssignVar();
+            statement = parseAssignVar();
             getToken(TokenType.SEMICOLON);
         }
         else if (getOptionalToken(TokenType.RETURN))
@@ -86,6 +103,8 @@ public class Parser implements IParser
             getToken(TokenType.SEMICOLON);
         else if (getOptionalToken(TokenType.BREAK))
             getToken(TokenType.SEMICOLON);
+
+        return statement;
     }
 
     private void parseCondition() throws Exception
@@ -101,49 +120,72 @@ public class Parser implements IParser
         }
     }
 
-    private void parseLogicalStatement() throws Exception
+    private LogicalStatement parseLogicalStatement() throws Exception
     {
-        parseAndCondition();
+        LogicalStatement statement = new LogicalStatement();
+
+        statement.addExpression(parseAndCondition());
 
         while (getOptionalToken(TokenAttr.OR_OPERATOR))
         {
-            parseAndCondition();
+            statement.addOperator(getLastOptionalToken());
+            statement.addExpression(parseAndCondition());
         }
+
+        return statement;
     }
 
-    private void parseAndCondition() throws Exception
+    private LogicalStatement parseAndCondition() throws Exception
     {
-        parseEqualCondition();
+        LogicalStatement statement = new LogicalStatement();
+
+        statement.addExpression(parseEqualCondition());
 
         while (getOptionalToken(TokenAttr.AND_OPERATOR))
         {
-            parseEqualCondition();
+            statement.addOperator(getLastOptionalToken());
+            statement.addExpression(parseEqualCondition());
         }
+
+        return statement;
     }
 
-    private void parseEqualCondition() throws Exception
+    private LogicalStatement parseEqualCondition() throws Exception
     {
-        parseRelationalCondition();
+        LogicalStatement statement = new LogicalStatement();
+
+        statement.addExpression(parseRelationalCondition());
 
         while (getOptionalToken(TokenAttr.EQUAL_OPERATOR))
         {
-            parseRelationalCondition();
+            statement.addOperator(getLastOptionalToken());
+            statement.addExpression(parseRelationalCondition());
         }
+
+        return statement;
     }
 
-    private void parseRelationalCondition() throws Exception
+    private LogicalStatement parseRelationalCondition() throws Exception
     {
-        parseLogicalParam();
+        LogicalStatement statement = new LogicalStatement();
+
+        statement.addExpression(parseLogicalParam());
 
         while (getOptionalToken(TokenAttr.RELATIONAL_OPERATOR))
         {
-            parseLogicalParam();
+            statement.addOperator(getLastOptionalToken());
+            statement.addExpression(parseLogicalParam());
         }
+
+        return statement;
     }
 
-    private void parseLogicalParam() throws Exception
+    private LogicalParam parseLogicalParam() throws Exception
     {
+        LogicalParam statement = new LogicalParam();
+
         getOptionalToken(TokenType.NEG);
+        statement.setNegation();
 
         //TODO: check if these lines need to be commented, we can try to parse these values
 //        if (getOptionalToken(TokenAttr.VAR_VAL))
@@ -165,44 +207,58 @@ public class Parser implements IParser
 //            {
 //                parseExpression();
 //            }
-            parseLogicalStatement();
+            statement.addExpression(parseLogicalStatement());
             getToken(TokenType.PARENTHESES_CLOSE);
         }
         else
         {
-            parseExpression();
+            statement.addExpression(parseExpression());
         }
+
+        return statement;
     }
 
-    private void parseExpression() throws Exception
+    private Expression parseExpression() throws Exception
     {
-        parseMultiExpression();
+        Expression expression = new Expression();
+
+        expression.addExpression(parseMultiExpression());
 
         while (getOptionalToken(TokenAttr.SUM_OPERATOR))
         {
-            parseMultiExpression();
+            expression.addOperator(getLastOptionalToken());
+            expression.addExpression(parseMultiExpression());
         }
+
+        return expression;
     }
 
-    private void parseMultiExpression() throws Exception
+    private Expression parseMultiExpression() throws Exception
     {
-        parseMultiParam();
+        Expression expression = new Expression();
+
+        expression.addExpression(parseMultiParam());
 
         while (getOptionalToken(TokenAttr.MUL_OPERATOR))
         {
-            parseMultiParam();
+            expression.addOperator(getLastOptionalToken());
+            expression.addExpression(parseMultiParam());
         }
+
+        return expression;
     }
 
-    private void parseMultiParam() throws Exception
+    private ExpressionParam parseMultiParam() throws Exception
     {
+        ExpressionParam param = new ExpressionParam();
+
         if (checkToken(TokenType.ID))
         {
-            parseVar();
+            param.addExpression(parseVar());
         }
         else if (checkToken(TokenAttr.VAR_VAL))
         {
-            parseVarValue();
+            param.addExpression(parseVarValue());
         }
         else
         {
@@ -215,30 +271,36 @@ public class Parser implements IParser
 //            {
 //                parseExpression();
 //            }
-            parseExpression();
+            param.addExpression(parseExpression());
             getToken(TokenType.PARENTHESES_CLOSE);
         }
+
+        return param;
     }
 
-    private void parseForLoop() throws Exception
+    private ForStatement parseForLoop() throws Exception
     {
+        ForStatement statement = new ForStatement();
+
         getToken(TokenType.FOR);
         getToken(TokenType.PARENTHESES_OPEN);
         if (!checkToken(TokenType.SEMICOLON))
         {
             if (checkToken(TokenAttr.VAR_TYPE))
-                parseInitVar();
+                statement.setFirstParam(parseInitVar());
             else
-                parseAssignVar();
+                statement.setFirstParam(parseAssignVar());
         }
         getToken(TokenType.SEMICOLON);
         if (!checkToken(TokenType.SEMICOLON))
-            parseLogicalStatement();
+            statement.setSecondParam(parseLogicalStatement());
         getToken(TokenType.SEMICOLON);
         if (!checkToken(TokenType.PARENTHESES_CLOSE))
-            parseAssignVar();
+            statement.setThirdParam(parseAssignVar());
         getToken(TokenType.PARENTHESES_CLOSE);
-        parseBlock();
+        statement.setStatement(parseBlock());
+
+        return statement;
     }
 
     private void parseWhileLoop() throws Exception
@@ -250,44 +312,67 @@ public class Parser implements IParser
         parseBlock();
     }
 
-    private void parseInitVar() throws Exception
+    private InitVar parseInitVar() throws Exception
     {
+        InitVar statement = new InitVar();
+
         getToken(TokenAttr.VAR_TYPE);
-        parseVar();
+        statement.setVar(parseVar());
 
         if (getOptionalToken(TokenType.ASSIGN))
         {
-            parseExpression();
+            statement.setVarValue(parseExpression());
         }
+
+        return statement;
     }
 
-    private void parseAssignVar() throws Exception
+    private AssignVar parseAssignVar() throws Exception
     {
-        parseVar();
+        AssignVar statement = new AssignVar();
+
+        statement.setVar(parseVar());
         getToken(TokenType.ASSIGN);
-        parseExpression();
+        statement.setVarValue(parseExpression());
+
+        return statement;
     }
 
-    private void parseVar() throws Exception
+    private Var parseVar() throws Exception
     {
-        getToken(TokenType.ID);
+        Var var = new Var();
+
+        //TODO: check is it correct
+        TokenId token = (TokenId) getToken(TokenType.ID);
+        var.setName(token.value);
         if (getOptionalToken(TokenType.SQUARE_OPEN))
         {
-            getToken(TokenType.NUM_INT);
+            //TODO begin: check
+            //before:
+            //getToken(TokenType.NUM_INT);
+            //now:
+            var.setIndex(parseExpression());
+            //todo end
             getToken(TokenType.SQUARE_CLOSE);
         }
+
+        return var;
     }
 
-    private void parseVarValue() throws Exception
+    private VarValue parseVarValue() throws Exception
     {
+        VarValue varValue = new VarValue();
+
         if (getOptionalToken(TokenAttr.BOOL_VAL))
         {
+            varValue.setValue(getLastOptionalToken());
         }
         else if (getOptionalToken(TokenType.SUB))
         {
+            varValue.setNegative();
             if (getOptionalToken(TokenAttr.NUM_VAL))
             {
-
+                varValue.setValue(getLastOptionalToken());
             }
             else
             {
@@ -296,16 +381,20 @@ public class Parser implements IParser
         }
         else if (getOptionalToken(TokenAttr.NUM_VAL))
         {
-
+            varValue.setValue(getLastOptionalToken());
         }
         else
         {
             raiseError(TokenAttr.NUM_VAL);
         }
+
+        return varValue;
     }
 
     private Token curToken = null;
     private Token nextToken = null;
+
+    private Token lastOptionalToken = null;
 
     private Token peekToken()
     {
@@ -360,9 +449,10 @@ public class Parser implements IParser
     private boolean getOptionalToken(TokenAttr attr)
     {
         boolean result = peekToken().detailedType.contains(attr);
+        lastOptionalToken = null;
 
         if (result)
-            getToken();
+            lastOptionalToken = getToken();
 
         return result;
     }
@@ -370,31 +460,37 @@ public class Parser implements IParser
     private boolean getOptionalToken(TokenType type)
     {
         boolean result = peekToken().type == type;
+        lastOptionalToken = null;
 
         if (result)
-            getToken();
+            lastOptionalToken = getToken();
 
         return result;
     }
 
-    private boolean getToken(TokenAttr attr) throws Exception
+    private Token getLastOptionalToken()
+    {
+        return lastOptionalToken;
+    }
+
+    private Token getToken(TokenAttr attr) throws Exception
     {
         Token token = getToken();
 
         if (!token.detailedType.contains(attr))
             raiseError(token, attr);
 
-        return true;
+        return token;
     }
 
-    private boolean getToken(TokenType type) throws Exception
+    private Token getToken(TokenType type) throws Exception
     {
         Token token = getToken();
 
         if (token.type != type)
             raiseError(token, type);
 
-        return true;
+        return token;
     }
 
 //    private boolean getToken(Token token, TokenAttr attr, String errorMsg)
