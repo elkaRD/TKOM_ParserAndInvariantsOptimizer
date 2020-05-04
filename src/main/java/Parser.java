@@ -1,3 +1,4 @@
+import sun.java2d.pipe.SpanShapeRenderer;
 import sun.util.resources.cldr.ig.LocaleNames_ig;
 
 public class Parser implements IParser
@@ -78,15 +79,16 @@ public class Parser implements IParser
     private Statement parseStatement() throws Exception
     {
         Statement statement = null;
+        Token token = null;
 
         //TODO: fix all statements (those without returning values)
 
         if (checkToken(TokenType.IF))
-            parseCondition();
+            statement = parseCondition();
         else if (checkToken(TokenType.FOR))
             statement = parseForLoop();
         else if (checkToken(TokenType.WHILE))
-            parseWhileLoop();
+            statement = parseWhileLoop();
         else if (checkToken(TokenAttr.VAR_TYPE))
         {
             statement = parseInitVar();
@@ -98,26 +100,33 @@ public class Parser implements IParser
             getToken(TokenType.SEMICOLON);
         }
         else if (getOptionalToken(TokenType.RETURN))
-            getToken(TokenType.SEMICOLON);
+            token = getToken(TokenType.SEMICOLON);
         else if (getOptionalToken(TokenType.CONTINUE))
-            getToken(TokenType.SEMICOLON);
+            token = getToken(TokenType.SEMICOLON);
         else if (getOptionalToken(TokenType.BREAK))
-            getToken(TokenType.SEMICOLON);
+            token = getToken(TokenType.SEMICOLON);
+
+        if (token != null)
+            statement = new SimpleStatement(token);
 
         return statement;
     }
 
-    private void parseCondition() throws Exception
+    private IfStatement parseCondition() throws Exception
     {
+        IfStatement statement = new IfStatement();
+
         getToken(TokenType.IF);
         getToken(TokenType.PARENTHESES_OPEN);
-        parseLogicalStatement();
+        statement.setCondition(parseLogicalStatement());
         getToken(TokenType.PARENTHESES_CLOSE);
-        parseBlock();
+        statement.setBlock(parseBlock());
         if (getOptionalToken(TokenType.ELSE))
         {
-            parseBlock();
+            statement.setElseBlock(parseBlock());
         }
+
+        return statement;
     }
 
     private LogicalStatement parseLogicalStatement() throws Exception
@@ -303,13 +312,17 @@ public class Parser implements IParser
         return statement;
     }
 
-    private void parseWhileLoop() throws Exception
+    private WhileStatement parseWhileLoop() throws Exception
     {
+        WhileStatement statement = new WhileStatement();
+
         getToken(TokenType.WHILE);
         getToken(TokenType.PARENTHESES_OPEN);
-        parseLogicalStatement();
+        statement.setCondition(parseLogicalStatement());
         getToken(TokenType.PARENTHESES_CLOSE);
-        parseBlock();
+        statement.setBlock(parseBlock());
+        
+        return statement;
     }
 
     private InitVar parseInitVar() throws Exception
