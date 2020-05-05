@@ -15,4 +15,15 @@ public class Program
     {
         mainFunction = function;
     }
+
+    @Override
+    public String toString()
+    {
+        String result = "";
+        for (InitVar var : globalVars)
+            result += globalVars;
+        result += mainFunction;
+
+        return result;
+    }
 }

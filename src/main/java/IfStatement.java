@@ -18,4 +18,17 @@ public class IfStatement extends Statement
     {
         this.elseBlock = block;
     }
+
+    @Override
+    public String toString()
+    {
+        String result =  "if (" + condition + ")" + block;
+
+        if (elseBlock != null)
+        {
+            result += "else" + elseBlock;
+        }
+
+        return result;
+    }
 }

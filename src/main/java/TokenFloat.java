@@ -15,4 +15,10 @@ public class TokenFloat extends Token
     }
 
     public float value;
+
+    @Override
+    public String toString()
+    {
+        return "" + value;
+    }
 }

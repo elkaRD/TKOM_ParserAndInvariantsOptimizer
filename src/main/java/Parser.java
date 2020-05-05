@@ -17,6 +17,7 @@ public class Parser implements IParser
         input = inputManager;
 
         Program program = parseProgram();
+        System.out.println(program);
     }
 
     private Program parseProgram() throws Exception
@@ -194,7 +195,7 @@ public class Parser implements IParser
         LogicalParam statement = new LogicalParam();
 
         getOptionalToken(TokenType.NEG);
-        statement.setNegation();
+        statement.setNegation(); //TODO: put it under the if statement
 
         //TODO: check if these lines need to be commented, we can try to parse these values
 //        if (getOptionalToken(TokenAttr.VAR_VAL))
@@ -321,7 +322,7 @@ public class Parser implements IParser
         statement.setCondition(parseLogicalStatement());
         getToken(TokenType.PARENTHESES_CLOSE);
         statement.setBlock(parseBlock());
-        
+
         return statement;
     }
 

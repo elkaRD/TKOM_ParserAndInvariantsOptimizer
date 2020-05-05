@@ -12,4 +12,10 @@ public class DefFunction
     {
         mainBlock = block;
     }
+
+    @Override
+    public String toString()
+    {
+        return "void " + mainFunction + "()" + mainBlock;
+    }
 }

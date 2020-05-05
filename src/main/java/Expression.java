@@ -15,4 +15,18 @@ public class Expression
     {
         operators.add(operator.type);
     }
+
+    @Override
+    public String toString()
+    {
+        String result = "" + expressions.get(0);
+
+        for (int i = 0; i < operators.size(); i++)
+        {
+            result += ReservedTokens.getInstance().getStr(operators.get(i));
+            result += expressions.get(i+1);
+        }
+
+        return result;
+    }
 }

@@ -12,11 +12,13 @@ public class ReservedTokens
     }
 
     private Map<String, TokenType> tokenTypes = new HashMap<>();
+    private Map<TokenType, String> tokenStr = new HashMap<>();
     private Map<String, EnumSet<TokenAttr>> tokenAttrs = new HashMap<>();
 
     private ReservedTokens()
     {
         fillTokenTypes();
+        fillTokenStr();
         fillTokenAttrs();
     }
 
@@ -77,6 +79,14 @@ public class ReservedTokens
         tokenTypes.put("break", TokenType.BREAK);
     }
 
+    private void fillTokenStr()
+    {
+        for (Map.Entry<String, TokenType> entry : tokenTypes.entrySet())
+        {
+            tokenStr.put(entry.getValue(), entry.getKey());
+        }
+    }
+
     private void fillTokenAttrs()
     {
         for (String token : tokenTypes.keySet())
@@ -131,5 +141,13 @@ public class ReservedTokens
             token.detailedType = tokenAttrs.get(tokenStr);
 
         return token;
+    }
+
+    public String getStr(TokenType tokenType)
+    {
+        if (!tokenStr.containsKey(tokenType))
+            return "";
+
+        return tokenStr.get(tokenType);
     }
 }

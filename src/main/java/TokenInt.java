@@ -15,4 +15,10 @@ public class TokenInt extends Token
     }
 
     public int value;
+
+    @Override
+    public String toString()
+    {
+        return "" + value;
+    }
 }

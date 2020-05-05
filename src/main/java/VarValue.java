@@ -12,4 +12,10 @@ public class VarValue extends Expression
     {
         negative = true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "" + constValue;
+    }
 }

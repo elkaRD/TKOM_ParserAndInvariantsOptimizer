@@ -9,4 +9,15 @@ public class Block extends Statement
     {
         statements.add(statement);
     }
+
+    @Override
+    public String toString()
+    {
+        String result = "\n{\n";
+        for (Statement statement : statements)
+            result += statement;
+        result += "}\n";
+
+        return result;
+    }
 }
