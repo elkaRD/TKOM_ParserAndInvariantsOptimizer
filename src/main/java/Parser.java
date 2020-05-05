@@ -82,8 +82,6 @@ public class Parser implements IParser
         Statement statement = null;
         Token token = null;
 
-        //TODO: fix all statements (those without returning values)
-
         if (checkToken(TokenType.IF))
             statement = parseCondition();
         else if (checkToken(TokenType.FOR))
@@ -194,8 +192,8 @@ public class Parser implements IParser
     {
         LogicalParam statement = new LogicalParam();
 
-        getOptionalToken(TokenType.NEG);
-        statement.setNegation(); //TODO: put it under the if statement
+        if (getOptionalToken(TokenType.NEG))
+            statement.setNegation(); //TODO: put it under the if statement
 
         //TODO: check if these lines need to be commented, we can try to parse these values
 //        if (getOptionalToken(TokenAttr.VAR_VAL))
@@ -262,6 +260,11 @@ public class Parser implements IParser
     {
         ExpressionParam param = new ExpressionParam();
 
+        //TODO: chech begin
+        if (getOptionalToken(TokenType.SUB))
+            param.setNegative();
+        //todo end
+
         if (checkToken(TokenType.ID))
         {
             param.addExpression(parseVar());
@@ -281,6 +284,7 @@ public class Parser implements IParser
 //            {
 //                parseExpression();
 //            }
+            param.bracketsRequired();
             param.addExpression(parseExpression());
             getToken(TokenType.PARENTHESES_CLOSE);
         }
@@ -330,7 +334,7 @@ public class Parser implements IParser
     {
         InitVar statement = new InitVar();
 
-        getToken(TokenAttr.VAR_TYPE);
+        statement.setType(getToken(TokenAttr.VAR_TYPE));
         statement.setVar(parseVar());
 
         if (getOptionalToken(TokenType.ASSIGN))
@@ -381,18 +385,18 @@ public class Parser implements IParser
         {
             varValue.setValue(getLastOptionalToken());
         }
-        else if (getOptionalToken(TokenType.SUB))
-        {
-            varValue.setNegative();
-            if (getOptionalToken(TokenAttr.NUM_VAL))
-            {
-                varValue.setValue(getLastOptionalToken());
-            }
-            else
-            {
-                raiseError(TokenAttr.NUM_VAL);
-            }
-        }
+//        else if (getOptionalToken(TokenType.SUB))
+//        {
+//            varValue.setNegative();
+//            if (getOptionalToken(TokenAttr.NUM_VAL))
+//            {
+//                varValue.setValue(getLastOptionalToken());
+//            }
+//            else
+//            {
+//                raiseError(TokenAttr.NUM_VAL);
+//            }
+//        }
         else if (getOptionalToken(TokenAttr.NUM_VAL))
         {
             varValue.setValue(getLastOptionalToken());

@@ -12,4 +12,14 @@ public class AssignVar extends Statement
     {
         this.varValue = varValue;
     }
+
+    @Override
+    public String toString()
+    {
+        String result = "" + var;
+        if (varValue != null)
+            result += " = " + varValue;
+
+        return result;
+    }
 }

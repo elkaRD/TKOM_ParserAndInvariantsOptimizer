@@ -12,4 +12,14 @@ public class Var extends Expression
     {
         this.index = index;
     }
+
+    @Override
+    public String toString()
+    {
+        String result = name;
+        if (index != null)
+            result += "[" + index + "]";
+
+        return result;
+    }
 }

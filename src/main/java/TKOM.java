@@ -29,7 +29,7 @@ public class TKOM
 
 //        String example = "abc//def";
 
-        String example = "void main () { if ((1+2)) {} }";
+        String example = "void main () { for (int i = 0; !(i < 20); i = i + 1 ) {int b = 3 * i + (12 / i); b = 12; } while (x <= 1) { x = x + 20; c = -(a+20 + -x); }}";
 
         InputManager input = new InputManager();
         input.readText(example);

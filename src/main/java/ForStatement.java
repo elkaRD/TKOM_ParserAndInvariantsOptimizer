@@ -27,4 +27,9 @@ public class ForStatement extends Statement
         this.statement = statement;
     }
 
+    @Override
+    public String toString()
+    {
+        return "for (" + firstParam + "; " + secondParam + "; " + thirdParam + ")" + statement;
+    }
 }

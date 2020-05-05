@@ -6,4 +6,13 @@ public class LogicalParam extends LogicalStatement
     {
         negation = true;
     }
+
+    @Override
+    public String toString()
+    {
+        if (!negation)
+            return super.toString();
+
+        return "!(" + super.toString() + ")";
+    }
 }

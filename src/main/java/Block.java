@@ -15,9 +15,25 @@ public class Block extends Statement
     {
         String result = "\n{\n";
         for (Statement statement : statements)
+        {
             result += statement;
+            if (isSemicolonNeeded(statement))
+                result += ";\n";
+        }
         result += "}\n";
 
         return result;
+    }
+
+    private boolean isSemicolonNeeded(Statement statement)
+    {
+        if (statement instanceof ForStatement)
+            return false;
+        if (statement instanceof IfStatement)
+            return false;
+        if (statement instanceof WhileStatement)
+            return false;
+
+        return true;
     }
 }

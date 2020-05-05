@@ -12,4 +12,10 @@ public class WhileStatement extends Statement
     {
         this.block = block;
     }
+
+    @Override
+    public String toString()
+    {
+        return "while (" + condition + ")" + block;
+    }
 }
