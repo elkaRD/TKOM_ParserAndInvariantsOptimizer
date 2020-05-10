@@ -30,6 +30,17 @@ public class ForStatement extends Statement
     @Override
     public String toString()
     {
-        return "for (" + firstParam + "; " + secondParam + "; " + thirdParam + ")" + statement;
+        String result = "for (";
+        if (firstParam != null)
+            result += firstParam;
+        result += "; ";
+        if (secondParam != null)
+            result += secondParam;
+        result += "; ";
+        if (thirdParam != null)
+            result += thirdParam;
+        result += ")" + statement;
+
+        return result;
     }
 }

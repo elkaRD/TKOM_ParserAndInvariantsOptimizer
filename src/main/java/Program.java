@@ -21,7 +21,7 @@ public class Program
     {
         String result = "";
         for (InitVar var : globalVars)
-            result += globalVars;
+            result += var + ";\n";
         result += mainFunction;
 
         return result;

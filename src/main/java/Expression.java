@@ -23,7 +23,7 @@ public class Expression
 
         for (int i = 0; i < operators.size(); i++)
         {
-            result += ReservedTokens.getInstance().getStr(operators.get(i));
+            result += " " + ReservedTokens.getInstance().getStr(operators.get(i)) + " ";
             result += expressions.get(i+1);
         }
 

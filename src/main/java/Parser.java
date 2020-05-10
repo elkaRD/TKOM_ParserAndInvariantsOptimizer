@@ -11,6 +11,13 @@ public class Parser implements IParser
     private IScanner scanner;
     private IInputManager input;
 
+    private Program program;
+
+    public String getParsedProgram()
+    {
+        return "" + program;
+    }
+
     public void parse(IInputManager inputManager) throws Exception
     {
         scanner = new Scanner();
@@ -22,7 +29,7 @@ public class Parser implements IParser
 
     private Program parseProgram() throws Exception
     {
-        Program program = new Program();
+        program = new Program();
 
         while (checkToken(TokenAttr.VAR_TYPE))
         {
@@ -57,6 +64,7 @@ public class Parser implements IParser
 
         if (getOptionalToken(TokenType.CURLY_OPEN))
         {
+            block.requireBrackets();
             while (true)
             {
                 if (checkToken(TokenType.CURLY_OPEN))
@@ -98,15 +106,17 @@ public class Parser implements IParser
             statement = parseAssignVar();
             getToken(TokenType.SEMICOLON);
         }
-        else if (getOptionalToken(TokenType.RETURN))
-            token = getToken(TokenType.SEMICOLON);
-        else if (getOptionalToken(TokenType.CONTINUE))
-            token = getToken(TokenType.SEMICOLON);
-        else if (getOptionalToken(TokenType.BREAK))
-            token = getToken(TokenType.SEMICOLON);
+        else
+        {
+            if (getOptionalToken(TokenType.RETURN))
+                getToken(TokenType.SEMICOLON);
+            else if (getOptionalToken(TokenType.CONTINUE))
+                getToken(TokenType.SEMICOLON);
+            else if (getOptionalToken(TokenType.BREAK))
+                getToken(TokenType.SEMICOLON);
 
-        if (token != null)
-            statement = new SimpleStatement(token);
+            statement = new SimpleStatement(getLastOptionalToken());
+        }
 
         return statement;
     }
@@ -215,6 +225,7 @@ public class Parser implements IParser
 //            {
 //                parseExpression();
 //            }
+            statement.needBrackets();
             statement.addExpression(parseLogicalStatement());
             getToken(TokenType.PARENTHESES_CLOSE);
         }

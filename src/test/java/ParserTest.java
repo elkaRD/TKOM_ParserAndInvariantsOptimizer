@@ -118,12 +118,19 @@ public class ParserTest
         assertTrue(checkCodeInMain("if (true) {}"));
         assertTrue(checkCodeInMain("if ((true)) {}"));
         assertTrue(checkCodeInMain("if (false) {}"));
-        assertTrue(checkCodeInMain("if (!false) {}"));
         assertTrue(checkCodeInMain("int x = 0; if (x) {}"));
-        assertTrue(checkCodeInMain("if (!3) {}"));
         assertTrue(checkCodeInMain("float x; if (x) {}"));
         assertTrue(checkCodeInMain("bool x; if (x) {}"));
         assertTrue(checkCodeInMain("if ((5 + 2)) {}"));
+    }
+
+    @Test
+    public void logicalNegationEncodeDecodeInMainTest()
+    {
+        assertTrue(checkCodeInMain("if (!false) {}"));
+        assertTrue(checkCodeInMain("if (!3) {}"));
+        assertTrue(checkCodeInMain("bool x; if (!(x)) {}"));
+        assertTrue(checkCodeInMain("bool x; if (true && !(x)) {}"));
     }
 
     @Test

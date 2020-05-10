@@ -6,4 +6,10 @@ public class SimpleStatement extends Statement
     {
         this.token = token;
     }
+
+    @Override
+    public String toString()
+    {
+        return ReservedTokens.getInstance().getStr(token.type);
+    }
 }

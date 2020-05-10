@@ -393,6 +393,11 @@ public class ScannerTest
         {
 
         }
+
+        public String getParsedProgram()
+        {
+            return null;
+        }
     }
 
     private class ParserMock2 implements  IParser
@@ -407,6 +412,11 @@ public class ScannerTest
         public void parse(IInputManager inputManager)
         {
 
+        }
+
+        public String getParsedProgram()
+        {
+            return null;
         }
     }
 }
