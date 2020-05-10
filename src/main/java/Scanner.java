@@ -1,9 +1,3 @@
-import com.sun.corba.se.impl.encoding.BufferManagerReadGrow;
-import com.sun.org.apache.xpath.internal.FoundIndex;
-import sun.jvm.hotspot.ui.tree.FloatTreeNodeAdapter;
-
-import java.awt.*;
-
 public class Scanner implements IScanner
 {
     private enum State
@@ -55,12 +49,14 @@ public class Scanner implements IScanner
         }
     }
 
-    private Token parseNextToken(IInputManager inputManager)
+    public Token parseNextToken(IInputManager inputManager)
     {
         State curState = State.BEGIN;
         State prevState = State.BEGIN;
         String curTokenStr = "";
         CharPos tokenPos = inputManager.getCurrentPosition();
+
+        skipWhiteCharsAndComments(inputManager, true, true);
 
         while (skipWhiteCharsAndComments(inputManager, false, true))
         {
@@ -189,7 +185,7 @@ public class Scanner implements IScanner
 
     private State handleSpecial(char nextChar, String curTokenStr)
     {
-        if (isSpecial(nextChar) && ReservedTokens.getInstance().recognizeReservedToken(curTokenStr + nextChar) != TokenType.INVALID) {
+        if (isSpecial(nextChar) && ReservedTokens.getInstance().recognizeReservedToken(curTokenStr + nextChar) != null) {
             return State.SPECIAL;
         }
 
@@ -216,15 +212,12 @@ public class Scanner implements IScanner
         if (!isAcceptingState(prevState))
             return null;
 
-        TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
+        Token generatedToken = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
 
-        Token generatedToken = reserved == TokenType.INVALID ?
-                generateToken(prevState, curTokenStr) :
-                generateToken(reserved);
+        if (generatedToken == null)
+            generatedToken = generateToken(prevState, curTokenStr);
 
         generatedToken.tokenPos = tokenPos;
-
-        System.out.println(curTokenStr + "\t\t" + generatedToken.type);
 
         return generatedToken;
     }
@@ -241,11 +234,6 @@ public class Scanner implements IScanner
                 return true;
         }
         return false;
-    }
-
-    private Token generateToken(TokenType predefinedType)
-    {
-        return new Token(predefinedType);
     }
 
     private Token generateToken(State state, String tokenStr)

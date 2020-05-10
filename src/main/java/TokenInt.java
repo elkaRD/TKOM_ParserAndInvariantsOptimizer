@@ -4,6 +4,8 @@ public class TokenInt extends Token
     {
         super(TokenType.NUM_INT);
         this.value = Integer.parseInt(tokenStr);
+        this.detailedType.add(TokenAttr.NUM_VAL);
+        this.detailedType.add(TokenAttr.VAR_VAL);
     }
 
     public TokenInt(int value)
@@ -13,4 +15,10 @@ public class TokenInt extends Token
     }
 
     public int value;
+
+    @Override
+    public String toString()
+    {
+        return "" + value;
+    }
 }

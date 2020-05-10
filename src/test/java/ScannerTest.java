@@ -338,7 +338,7 @@ public class ScannerTest
 
         assertFalse(scanner.getErrorFlag());
 
-        return parser.token.type == ReservedTokens.getInstance().recognizeReservedToken(keyword);
+        return parser.token.type == ReservedTokens.getInstance().recognizeReservedToken(keyword).type;
     }
 
     private CharPos getErrorPos(String inputText)
@@ -388,6 +388,16 @@ public class ScannerTest
         {
             this.token = token;
         }
+
+        public void parse(IInputManager inputManager)
+        {
+
+        }
+
+        public String getParsedProgram()
+        {
+            return null;
+        }
     }
 
     private class ParserMock2 implements  IParser
@@ -397,6 +407,16 @@ public class ScannerTest
         public void readToken(Token token)
         {
             this.tokens.add(token);
+        }
+
+        public void parse(IInputManager inputManager)
+        {
+
+        }
+
+        public String getParsedProgram()
+        {
+            return null;
         }
     }
 }
