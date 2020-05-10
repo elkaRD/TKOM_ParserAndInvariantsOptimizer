@@ -52,6 +52,30 @@ public class ParserTest
     }
 
     @Test
+    public void assignVarTabTest()
+    {
+        assertTrue(checkCodeInMain("int x[12]; x[0] = 5;"));
+        assertTrue(checkCodeInMain("float x[13]; x[3] = 5.4;"));
+        assertTrue(checkCodeInMain("bool x[14]; x[6] = true;"));
+    }
+
+    @Test
+    public void indexTest()
+    {
+        assertTrue(checkCodeInMain("int x[20]; for (int i = 0; i < 20; i = i+1) { x[i] = i * i; }"));
+        assertTrue(checkCodeInMain("int x[20]; for (int i = 0; i < 10; i = i+1) { x[i*2] = i * i; }"));
+        assertTrue(checkCodeInMain("int x[20]; for (int i = 0; i < 3; i = i+1) { x[(i * 2) + 5] = i * i; }"));
+    }
+
+    @Test
+    public void getTabVarTest()
+    {
+        assertTrue(checkCodeInMain("int y[50]; int x = y[2];"));
+        assertTrue(checkCodeInMain("int y[50]; int x = y[2] * 3;"));
+        assertTrue(checkCodeInMain("int y[50]; int x = (3 * y[2] + 3) + 1;"));
+    }
+
+    @Test
     public void blockTest()
     {
         assertTrue(checkCodeInMain("{}"));
@@ -158,6 +182,16 @@ public class ParserTest
         assertTrue(checkCodeInMain("int x = (20 / 4);"));
         assertTrue(checkCodeInMain("int x = ((20));"));
         assertTrue(checkCodeInMain("int y; int x = y;"));
+    }
+
+    @Test
+    public void negativeExprTest()
+    {
+        assertTrue(checkCodeInMain("int x = -20;"));
+        assertTrue(checkCodeInMain("int x = -(20);"));
+        assertTrue(checkCodeInMain("int x = -((20));"));
+        assertTrue(checkCodeInMain("int x = -((20 - 3) / 5);"));
+        assertTrue(checkCodeInMain("int x = 30 - ((20 - 3) / 5);"));
     }
 
     @Test

@@ -1,9 +1,3 @@
-import com.sun.corba.se.impl.encoding.BufferManagerReadGrow;
-import com.sun.org.apache.xpath.internal.FoundIndex;
-import sun.jvm.hotspot.ui.tree.FloatTreeNodeAdapter;
-
-import java.awt.*;
-
 public class Scanner implements IScanner
 {
     private enum State
@@ -218,20 +212,12 @@ public class Scanner implements IScanner
         if (!isAcceptingState(prevState))
             return null;
 
-//        TokenType reserved = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
-//
-//        Token generatedToken = reserved == TokenType.INVALID ?
-//                generateToken(prevState, curTokenStr) :
-//                generateToken(reserved);
-
         Token generatedToken = ReservedTokens.getInstance().recognizeReservedToken(curTokenStr);
 
         if (generatedToken == null)
             generatedToken = generateToken(prevState, curTokenStr);
 
         generatedToken.tokenPos = tokenPos;
-
-        //System.out.println(curTokenStr + "\t\t" + generatedToken.type);
 
         return generatedToken;
     }
@@ -249,11 +235,6 @@ public class Scanner implements IScanner
         }
         return false;
     }
-
-//    private Token generateToken(TokenType predefinedType)
-//    {
-//        return new Token(predefinedType);
-//    }
 
     private Token generateToken(State state, String tokenStr)
     {

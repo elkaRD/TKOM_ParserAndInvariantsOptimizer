@@ -88,7 +88,6 @@ public class Parser implements IParser
     private Statement parseStatement() throws Exception
     {
         Statement statement = null;
-        Token token = null;
 
         if (checkToken(TokenType.IF))
             statement = parseCondition();
@@ -203,28 +202,11 @@ public class Parser implements IParser
         LogicalParam statement = new LogicalParam();
 
         if (getOptionalToken(TokenType.NEG))
-            statement.setNegation(); //TODO: put it under the if statement
+            statement.setNegation();
 
-        //TODO: check if these lines need to be commented, we can try to parse these values
-//        if (getOptionalToken(TokenAttr.VAR_VAL))
-//        {
-//
-//        }
-//        else if (checkToken(TokenType.ID))
-//        {
-//            parseVar();
-//        }
-        /*else*/ if (checkToken(TokenType.PARENTHESES_OPEN))
+        if (checkToken(TokenType.PARENTHESES_OPEN))
         {
             getToken(TokenType.PARENTHESES_OPEN);
-//            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN)) //TODO: there's going to be a problem with assigning values to array's elements
-//            {
-//                parseAssignVar();
-//            }
-//            else
-//            {
-//                parseExpression();
-//            }
             statement.needBrackets();
             statement.addExpression(parseLogicalStatement());
             getToken(TokenType.PARENTHESES_CLOSE);
@@ -271,10 +253,8 @@ public class Parser implements IParser
     {
         ExpressionParam param = new ExpressionParam();
 
-        //TODO: chech begin
         if (getOptionalToken(TokenType.SUB))
             param.setNegative();
-        //todo end
 
         if (checkToken(TokenType.ID))
         {
@@ -287,14 +267,6 @@ public class Parser implements IParser
         else
         {
             getToken(TokenType.PARENTHESES_OPEN);
-//            if (checkToken(TokenType.ID) && checkNextToken(TokenType.ASSIGN))  //TODO: there's going to be a problem with assigning values to array's elements
-//            {
-//                parseAssignVar();
-//            }
-//            else
-//            {
-//                parseExpression();
-//            }
             param.bracketsRequired();
             param.addExpression(parseExpression());
             getToken(TokenType.PARENTHESES_CLOSE);
@@ -371,17 +343,11 @@ public class Parser implements IParser
     {
         Var var = new Var();
 
-        //TODO: check is it correct
         TokenId token = (TokenId) getToken(TokenType.ID);
         var.setName(token.value);
         if (getOptionalToken(TokenType.SQUARE_OPEN))
         {
-            //TODO begin: check
-            //before:
-            //getToken(TokenType.NUM_INT);
-            //now:
             var.setIndex(parseExpression());
-            //todo end
             getToken(TokenType.SQUARE_CLOSE);
         }
 
@@ -396,18 +362,6 @@ public class Parser implements IParser
         {
             varValue.setValue(getLastOptionalToken());
         }
-//        else if (getOptionalToken(TokenType.SUB))
-//        {
-//            varValue.setNegative();
-//            if (getOptionalToken(TokenAttr.NUM_VAL))
-//            {
-//                varValue.setValue(getLastOptionalToken());
-//            }
-//            else
-//            {
-//                raiseError(TokenAttr.NUM_VAL);
-//            }
-//        }
         else if (getOptionalToken(TokenAttr.NUM_VAL))
         {
             varValue.setValue(getLastOptionalToken());
@@ -436,17 +390,6 @@ public class Parser implements IParser
         return curToken;
     }
 
-    private Token peekNextToken()
-    {
-        if (curToken == null)
-        {
-            curToken = scanner.parseNextToken(input);
-            nextToken = scanner.parseNextToken(input);
-        }
-
-        return nextToken;
-    }
-
     private Token getToken()
     {
         Token result = peekToken();
@@ -463,16 +406,6 @@ public class Parser implements IParser
     private boolean checkToken(TokenType type)
     {
         return peekToken().type == type;
-    }
-
-    private boolean checkNextToken(TokenAttr attr)
-    {
-        return peekNextToken().detailedType.contains(attr);
-    }
-
-    private boolean checkNextToken(TokenType type)
-    {
-        return peekNextToken().type == type;
     }
 
     private boolean getOptionalToken(TokenAttr attr)
@@ -522,36 +455,10 @@ public class Parser implements IParser
         return token;
     }
 
-//    private boolean getToken(Token token, TokenAttr attr, String errorMsg)
-//    {
-//        boolean result = token.detailedType.contains(attr);
-//    }
-//
-//    private boolean getToken(Token token, TokenType type, String errorMsg)
-//    {
-//        return token.type == type;
-//    }
-
-    private void raiseError(TokenType expectedType) throws Exception
-    {
-        ErrorHandler.getInstance().displayErrorLine(curToken.tokenPos, "Expectged " + expectedType);
-        throw new Exception("Parser TokenType error");
-    }
-
     private void raiseError(TokenAttr expectedAttr) throws Exception
     {
         ErrorHandler.getInstance().displayErrorLine(curToken.tokenPos, "Expectged " + expectedAttr);
         throw new Exception("Parser TokenType error");
-    }
-
-    private void raiseError(String msg)
-    {
-        ErrorHandler.getInstance().displayErrorLine(curToken.tokenPos, msg);
-    }
-
-    private void raiseError(Token token, String msg)
-    {
-        ErrorHandler.getInstance().displayErrorLine(token.tokenPos, msg);
     }
 
     private void raiseError(Token token, TokenType expectedType) throws Exception

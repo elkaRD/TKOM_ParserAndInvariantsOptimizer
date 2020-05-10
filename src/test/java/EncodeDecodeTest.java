@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DecodeEncodeTest
+public class EncodeDecodeTest
 {
     @Test
     public void emptyMainEncodeDecodeTest()
@@ -49,6 +49,30 @@ public class DecodeEncodeTest
         assertTrue(checkEncodeDecodeInMain("int x; x = 5;"));
         assertTrue(checkEncodeDecodeInMain("float x; x = 5.4;"));
         assertTrue(checkEncodeDecodeInMain("bool x; x = true;"));
+    }
+
+    @Test
+    public void assignVarTabTest()
+    {
+        assertTrue(checkEncodeDecodeInMain("int x[12]; x[0] = 5;"));
+        assertTrue(checkEncodeDecodeInMain("float x[13]; x[3] = 5.4;"));
+        assertTrue(checkEncodeDecodeInMain("bool x[14]; x[6] = true;"));
+    }
+
+    @Test
+    public void indexEncodeDecodeInMainTest()
+    {
+        assertTrue(checkEncodeDecodeInMain("int x[20]; for (int i = 0; i < 20; i = i+1) { x[i] = i * i; }"));
+        assertTrue(checkEncodeDecodeInMain("int x[20]; for (int i = 0; i < 10; i = i+1) { x[i*2] = i * i; }"));
+        assertTrue(checkEncodeDecodeInMain("int x[20]; for (int i = 0; i < 3; i = i+1) { x[(i * 2) + 5] = i * i; }"));
+    }
+
+    @Test
+    public void getTabVarEncodeDecodeInMainTest()
+    {
+        assertTrue(checkEncodeDecodeInMain("int y[50]; int x = y[2];"));
+        assertTrue(checkEncodeDecodeInMain("int y[50]; int x = y[2] * 3;"));
+        assertTrue(checkEncodeDecodeInMain("int y[50]; int x = (3 * y[2] + 3) + 1;"));
     }
 
     @Test
@@ -158,6 +182,16 @@ public class DecodeEncodeTest
         assertTrue(checkEncodeDecodeInMain("int x = (20 / 4);"));
         assertTrue(checkEncodeDecodeInMain("int x = ((20));"));
         assertTrue(checkEncodeDecodeInMain("int y; int x = y;"));
+    }
+
+    @Test
+    public void negativeExprEncodeDecodeInMainTest()
+    {
+        assertTrue(checkEncodeDecodeInMain("int x = -20;"));
+        assertTrue(checkEncodeDecodeInMain("int x = -(20);"));
+        assertTrue(checkEncodeDecodeInMain("int x = -((20));"));
+        assertTrue(checkEncodeDecodeInMain("int x = -((20 - 3) / 5);"));
+        assertTrue(checkEncodeDecodeInMain("int x = 30 - ((20 - 3) / 5);"));
     }
 
     @Test
