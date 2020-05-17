@@ -24,6 +24,7 @@ public class Parser implements IParser
         input = inputManager;
 
         Program program = parseProgram();
+        Block.debugBlock.moveStatementHigher(Block.debugStatement);
         System.out.println(program);
     }
 
@@ -62,6 +63,8 @@ public class Parser implements IParser
     {
         Block block = new Block();
 
+        Environment.getInstance().beginBlock(block);
+
         if (getOptionalToken(TokenType.CURLY_OPEN))
         {
             block.requireBrackets();
@@ -81,6 +84,8 @@ public class Parser implements IParser
         {
             block.addStatement(parseStatement());
         }
+
+        Environment.getInstance().endBlock();
 
         return block;
     }
@@ -295,7 +300,7 @@ public class Parser implements IParser
         if (!checkToken(TokenType.PARENTHESES_CLOSE))
             statement.setThirdParam(parseAssignVar());
         getToken(TokenType.PARENTHESES_CLOSE);
-        statement.setStatement(parseBlock());
+        statement.setBlock(parseBlock());
 
         return statement;
     }

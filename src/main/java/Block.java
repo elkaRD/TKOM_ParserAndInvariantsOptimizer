@@ -5,10 +5,53 @@ public class Block extends Statement
 {
     private List<Statement> statements = new ArrayList<>();
     private boolean bracketsRequired = false;
+    private Block parentBlock = null;
+    private boolean isLoop = false;
+    private Statement owner = this;
+
+    private int level;
+
+    public void setIsLoop()
+    {
+        isLoop = true;
+    }
+
+    public static int debugCounter = 0;
+    public static Statement debugStatement = null;
+    public static Block debugBlock = null;
 
     public void addStatement(Statement statement)
     {
         statements.add(statement);
+
+        debugCounter += 1;
+        if (debugCounter == 5)
+        {
+            System.out.println("Found statement no. 3: " + statement);
+            debugStatement = statement;
+            debugBlock = this;
+
+        }
+    }
+
+    public void setParentBlock(Block block)
+    {
+        parentBlock = block;
+    }
+
+    public Block getParentBlock()
+    {
+        return parentBlock;
+    }
+
+    public void setOwner(Statement owner)
+    {
+        this.owner = owner;
+    }
+
+    public void setLevel(int level)
+    {
+        this.level = level;
     }
 
     public void requireBrackets()
@@ -21,16 +64,26 @@ public class Block extends Statement
     {
         String result = "\n";
         if (bracketsRequired)
-            result += "{\n";
+            result += offset() + "{\n";
         for (Statement statement : statements)
         {
-            result += statement;
+            result += offset() + "\t" + statement;
             if (isSemicolonNeeded(statement))
                 result += ";\n";
         }
         if (bracketsRequired)
-            result += "}\n";
+            result += offset() + "}\n";
 
+
+
+        return result;
+    }
+
+    public String offset()
+    {
+        String result = "";
+        for (int i = 0; i < level; i++)
+            result += '\t';
         return result;
     }
 
@@ -47,4 +100,25 @@ public class Block extends Statement
 
         return true;
     }
+
+    public void moveStatementHigher(Statement statement)
+    {
+        statements.remove(statement);
+        //parentBlock.gotStatementFromChildBlock(statement, this);
+
+//        Statement toFind = this;
+//
+//        while (toFind != null && !(toFind instanceof LoopStatement))
+//        {
+//            toFind = toFind.
+//        }
+
+        int index = parentBlock.statements.indexOf(owner);
+        parentBlock.statements.add(index, statement);
+    }
+
+//    public void gotStatementFromChildBlock(Statement statement, Block child)
+//    {
+//
+//    }
 }

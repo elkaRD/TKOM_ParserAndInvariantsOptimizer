@@ -17,6 +17,8 @@ public class TKOM
                 "      c = -(a+20 + -x); \n" +
                 "       if (true) { continue; } else break;  \n" +
                 "   } \n" +
+                "   while (true) \n" +
+                "       t = 3; \n" +
                 "} \n";
 
         InputManager input = new InputManager();

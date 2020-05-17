@@ -1,11 +1,9 @@
-import sun.rmi.runtime.Log;
-
-public class ForStatement extends Statement
+public class ForStatement extends LoopStatement
 {
     private Statement firstParam = null;
     private LogicalStatement secondParam = null;
     private Statement thirdParam = null;
-    private Statement statement = null;
+    private Block block = null;
 
     public void setFirstParam(Statement statement)
     {
@@ -22,9 +20,11 @@ public class ForStatement extends Statement
         thirdParam = statement;
     }
 
-    public void setStatement(Statement statement)
+    public void setBlock(Block block)
     {
-        this.statement = statement;
+        this.block = block;
+        this.block.setIsLoop();
+        this.block.setOwner(this);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ForStatement extends Statement
         result += "; ";
         if (thirdParam != null)
             result += thirdParam;
-        result += ")" + statement;
+        result += ")" + block;
 
         return result;
     }

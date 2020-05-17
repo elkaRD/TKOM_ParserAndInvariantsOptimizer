@@ -26,7 +26,7 @@ public class IfStatement extends Statement
 
         if (elseBlock != null)
         {
-            result += "else" + elseBlock;
+            result += elseBlock.offset() + "else" + elseBlock;
         }
 
         return result;

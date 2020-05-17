@@ -1,4 +1,4 @@
-public class WhileStatement extends Statement
+public class WhileStatement extends LoopStatement
 {
     private LogicalStatement condition = null;
     private Block block = null;
@@ -11,6 +11,8 @@ public class WhileStatement extends Statement
     public void setBlock(Block block)
     {
         this.block = block;
+        this.block.setIsLoop();
+        this.block.setOwner(this);
     }
 
     @Override
