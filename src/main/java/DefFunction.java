@@ -16,6 +16,6 @@ public class DefFunction
     @Override
     public String toString()
     {
-        return "void " + mainFunction + "()" + mainBlock;
+        return "\nvoid " + mainFunction + "()" + mainBlock;
     }
 }

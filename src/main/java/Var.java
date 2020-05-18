@@ -13,6 +13,16 @@ public class Var extends Expression
         this.index = index;
     }
 
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public Expression getIndex()
+    {
+        return this.index;
+    }
+
     @Override
     public String toString()
     {

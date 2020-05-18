@@ -24,7 +24,7 @@ public class Parser implements IParser
         input = inputManager;
 
         Program program = parseProgram();
-        Block.debugBlock.moveStatementHigher(Block.debugStatement);
+        //Block.debugBlock.moveStatementHigher(Block.debugStatement);
         System.out.println(program);
     }
 
@@ -321,6 +321,7 @@ public class Parser implements IParser
     private InitVar parseInitVar() throws Exception
     {
         InitVar statement = new InitVar();
+        statement.setPos(peekToken().tokenPos);
 
         statement.setType(getToken(TokenAttr.VAR_TYPE));
         statement.setVar(parseVar());
@@ -330,12 +331,15 @@ public class Parser implements IParser
             statement.setVarValue(parseExpression());
         }
 
+        Environment.getInstance().declareVar(statement);
+
         return statement;
     }
 
     private AssignVar parseAssignVar() throws Exception
     {
         AssignVar statement = new AssignVar();
+        statement.setPos(peekToken().tokenPos);
 
         statement.setVar(parseVar());
         getToken(TokenType.ASSIGN);
@@ -383,6 +387,17 @@ public class Parser implements IParser
     private Token nextToken = null;
 
     private Token lastOptionalToken = null;
+
+//    private Token peekNextToken()
+//    {
+//        if (curToken == null)
+//        {
+//            curToken = scanner.parseNextToken(input);
+//            nextToken = scanner.parseNextToken(input);
+//        }
+//
+//        return nextToken == null ? curToken : nextToken;
+//    }
 
     private Token peekToken()
     {

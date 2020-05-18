@@ -7,6 +7,7 @@ public class InitVar extends Statement
     public void setType(Token varType)
     {
         this.varType = varType;
+//        setPos(varType.tokenPos);
     }
 
     public void setVar(Var var)
@@ -14,9 +15,19 @@ public class InitVar extends Statement
         this.var = var;
     }
 
+    public Var getVar()
+    {
+        return var;
+    }
+
     public void setVarValue(Expression varValue)
     {
         this.varValue = varValue;
+    }
+
+    public Expression getVarValue()
+    {
+        return this.varValue;
     }
 
     @Override

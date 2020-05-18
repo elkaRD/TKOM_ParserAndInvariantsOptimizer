@@ -54,9 +54,10 @@ public class Scanner implements IScanner
         State curState = State.BEGIN;
         State prevState = State.BEGIN;
         String curTokenStr = "";
-        CharPos tokenPos = inputManager.getCurrentPosition();
 
         skipWhiteCharsAndComments(inputManager, true, true);
+
+        CharPos tokenPos = inputManager.getCurrentPosition();
 
         while (skipWhiteCharsAndComments(inputManager, false, true))
         {

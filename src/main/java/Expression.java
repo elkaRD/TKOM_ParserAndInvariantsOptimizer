@@ -29,4 +29,7 @@ public class Expression
 
         return result;
     }
+
+    protected List<String> readVars = new ArrayList<>();
+    protected List<String> writtenVars = new ArrayList<>();
 }

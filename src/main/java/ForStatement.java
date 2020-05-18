@@ -1,3 +1,5 @@
+import com.sun.org.apache.xml.internal.security.Init;
+
 public class ForStatement extends LoopStatement
 {
     private Statement firstParam = null;
@@ -5,9 +7,15 @@ public class ForStatement extends LoopStatement
     private Statement thirdParam = null;
     private Block block = null;
 
-    public void setFirstParam(Statement statement)
+    public void setFirstParam(Statement statement) throws Exception
     {
         firstParam = statement;
+
+//        if (firstParam instanceof InitVar)
+//        {
+//            InitVar initVar = (InitVar) firstParam;
+//            Environment.getInstance().declareVar(initVar);
+//        }
     }
 
     public void setSecondParam(LogicalStatement statement)

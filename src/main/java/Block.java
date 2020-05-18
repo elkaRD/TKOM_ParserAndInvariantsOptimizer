@@ -16,22 +16,21 @@ public class Block extends Statement
         isLoop = true;
     }
 
-    public static int debugCounter = 0;
-    public static Statement debugStatement = null;
-    public static Block debugBlock = null;
+//    public static int debugCounter = 0;
+//    public static Statement debugStatement = null;
+//    public static Block debugBlock = null;
 
     public void addStatement(Statement statement)
     {
         statements.add(statement);
 
-        debugCounter += 1;
-        if (debugCounter == 5)
-        {
-            System.out.println("Found statement no. 3: " + statement);
-            debugStatement = statement;
-            debugBlock = this;
-
-        }
+//        debugCounter += 1;
+//        if (debugCounter == 5)
+//        {
+//            System.out.println("Found statement no. 3: " + statement);
+//            debugStatement = statement;
+//            debugBlock = this;
+//        }
     }
 
     public void setParentBlock(Block block)
