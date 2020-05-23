@@ -93,7 +93,7 @@ public class ParserTest
         assertTrue(checkCodeInMain("return;"));
         assertTrue(checkCodeInMain("break;"));
         assertTrue(checkCodeInMain("continue;"));
-        assertTrue(checkCodeInMain("int x = a;"));
+        assertTrue(checkCodeInMain("int x = 2;"));
         assertTrue(checkCodeInMain("int x = 1; if (true) x = 2;"));
         assertTrue(checkCodeInMain("if (false) {}"));
         assertTrue(checkCodeInMain("for (;;) {}"));
@@ -198,29 +198,27 @@ public class ParserTest
     public void forLoopTest()
     {
         assertTrue(checkCodeInMain("for (int i = 0; i < 10; i = i + 1) {}"));
-        assertTrue(checkCodeInMain("for (i = 0; i < 10; i = i + 1) {}"));
-        assertTrue(checkCodeInMain("for (i = 0; true; i = i + 1) {}"));
+        assertTrue(checkCodeInMain("for (int i = 0; i < 10; i = i + 1) {}"));
+        assertTrue(checkCodeInMain("for (int i = 0; true; i = i + 1) {}"));
         assertTrue(checkCodeInMain("for (;;) {}"));
-
-        assertTrue(checkCodeInMain("for (int i = 0; i < 10; i = i + 1) x = 2;"));
+        assertTrue(checkCodeInMain("for (int i = 0; i < 10; i = i + 1) i = 2;"));
     }
 
     @Test
     public void whileLoopTest()
     {
-        assertTrue(checkCodeInMain("while (x < 10) {}"));
+        assertTrue(checkCodeInMain("while (2 < 10) {}"));
         assertTrue(checkCodeInMain("while (true) {}"));
-
-        assertTrue(checkCodeInMain("while (x < 10) x = 2;"));
+        assertTrue(checkCodeInMain("int x; while (x < 10) x = 2;"));
     }
 
     @Test
     public void ifTest()
     {
-        assertTrue(checkCodeInMain("if (x == 1) {}"));
-        assertTrue(checkCodeInMain("if (x == 1) x = 2;"));
-        assertTrue(checkCodeInMain("if (x == 1) x = 2; else {}"));
-        assertTrue(checkCodeInMain("if (x == 1) x = 2; else x = 3;"));
+        assertTrue(checkCodeInMain("if (0 == 1) {}"));
+        assertTrue(checkCodeInMain("int x; if (x == 1) x = 2;"));
+        assertTrue(checkCodeInMain("int x; if (x == 1) x = 2; else {}"));
+        assertTrue(checkCodeInMain("int x; if (x == 1) x = 2; else x = 3;"));
     }
 
     private boolean foundError(String inputText)

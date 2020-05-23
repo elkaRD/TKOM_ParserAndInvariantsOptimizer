@@ -10,6 +10,7 @@ public class Parser implements IParser
 
     private IScanner scanner;
     private IInputManager input;
+    private Environment environment = new Environment();
 
     private Program program;
 
@@ -63,7 +64,7 @@ public class Parser implements IParser
     {
         Block block = new Block();
 
-        Environment.getInstance().beginBlock(block);
+        environment.beginBlock(block);
 
         if (getOptionalToken(TokenType.CURLY_OPEN))
         {
@@ -85,7 +86,7 @@ public class Parser implements IParser
             block.addStatement(parseStatement());
         }
 
-        Environment.getInstance().endBlock();
+        environment.endBlock();
 
         return block;
     }
@@ -284,7 +285,7 @@ public class Parser implements IParser
     {
         ForStatement statement = new ForStatement();
 
-        Environment.getInstance().moveNextVarToNextBlock();
+        environment.moveNextVarToNextBlock();
 
         getToken(TokenType.FOR);
         getToken(TokenType.PARENTHESES_OPEN);
@@ -327,16 +328,16 @@ public class Parser implements IParser
 
         statement.setType(getToken(TokenAttr.VAR_TYPE));
 
-        Environment.getInstance().enableSkippingUndeclared();
+        environment.enableSkippingUndeclared();
         statement.setVar(parseVar());
-        Environment.getInstance().disableSkippingUndeclared();
+        environment.disableSkippingUndeclared();
 
         if (getOptionalToken(TokenType.ASSIGN))
         {
             statement.setVarValue(parseExpression());
         }
 
-        Environment.getInstance().declareVar(statement);
+        environment.declareVar(statement);
 
         return statement;
     }
@@ -366,7 +367,7 @@ public class Parser implements IParser
             getToken(TokenType.SQUARE_CLOSE);
         }
 
-        Environment.getInstance().usedVariable(var);
+        environment.usedVariable(var);
 
         return var;
     }

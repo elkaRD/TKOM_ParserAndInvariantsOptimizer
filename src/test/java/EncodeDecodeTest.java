@@ -93,7 +93,7 @@ public class EncodeDecodeTest
         assertTrue(checkEncodeDecodeInMain("return;"));
         assertTrue(checkEncodeDecodeInMain("break;"));
         assertTrue(checkEncodeDecodeInMain("continue;"));
-        assertTrue(checkEncodeDecodeInMain("int x = a;"));
+        assertTrue(checkEncodeDecodeInMain("int x = 2;"));
         assertTrue(checkEncodeDecodeInMain("int x = 1; if (true) x = 2;"));
         assertTrue(checkEncodeDecodeInMain("if (false) {}"));
         assertTrue(checkEncodeDecodeInMain("for (;;) {}"));
@@ -198,36 +198,35 @@ public class EncodeDecodeTest
     public void forLoopEncodeDecodeInMainTest()
     {
         assertTrue(checkEncodeDecodeInMain("for (int i = 0; i < 10; i = i + 1) {}"));
-        assertTrue(checkEncodeDecodeInMain("for (i = 0; i < 10; i = i + 1) {}"));
-        assertTrue(checkEncodeDecodeInMain("for (i = 0; true; i = i + 1) {}"));
+        assertTrue(checkEncodeDecodeInMain("for (int i = 0; i < 10; i = i + 1) {}"));
+        assertTrue(checkEncodeDecodeInMain("for (int i = 0; true; i = i + 1) {}"));
         assertTrue(checkEncodeDecodeInMain("for (;;) {}"));
-
-        assertTrue(checkEncodeDecodeInMain("for (int i = 0; i < 10; i = i + 1) x = 2;"));
+        assertTrue(checkEncodeDecodeInMain("for (int i = 0; i < 10; i = i + 1) i = 2;"));
     }
 
     @Test
     public void whileLoopEncodeDecodeInMainTest()
     {
-        assertTrue(checkEncodeDecodeInMain("while (x < 10) {}"));
+        assertTrue(checkEncodeDecodeInMain("int x; while (x < 10) {}"));
         assertTrue(checkEncodeDecodeInMain("while (true) {}"));
-
-        assertTrue(checkEncodeDecodeInMain("while (x < 10) x = 2;"));
+        assertTrue(checkEncodeDecodeInMain("int x; while (x < 10) x = 2;"));
     }
 
     @Test
     public void ifEncodeDecodeInMainTest()
     {
-        assertTrue(checkEncodeDecodeInMain("if (x == 1) {}"));
-        assertTrue(checkEncodeDecodeInMain("if (x == 1) x = 2;"));
-        assertTrue(checkEncodeDecodeInMain("if (x == 1) x = 2; else {}"));
-        assertTrue(checkEncodeDecodeInMain("if (x == 1) x = 2; else x = 3;"));
+        assertTrue(checkEncodeDecodeInMain("if (0 == 1) {}"));
+        assertTrue(checkEncodeDecodeInMain("int x; if (x == 1) x = 2;"));
+        assertTrue(checkEncodeDecodeInMain("int x; if (x == 1) x = 2; else {}"));
+        assertTrue(checkEncodeDecodeInMain("int x; if (x == 1) x = 2; else x = 3;"));
     }
 
     @Test
     public void decodeEncodeTest()
     {
         String program = "bool t = true; \n" +
-                "float f = 5.0; \n" +
+                "float a = 5.0; \n" +
+                "int x; \n" +
                 "void main () \n" +
                 "{ \n" +
                 "   for (int i = 0; !(i < 20); i = i + 1 ) \n" +
@@ -237,8 +236,8 @@ public class EncodeDecodeTest
                 "   while (x <= 1 || x > 10 || x == 1 && !(x!=5))  \n" +
                 "   { \n" +
                 "      x = x + 20; \n" +
-                "      c = -(a+20 + -x); \n" +
-                "       if (true) { continue; } else break;  \n" +
+                "      float c = -(a+20 + -x); \n" +
+                "      if (true) { continue; } else break;  \n" +
                 "   } \n" +
                 "} \n";
 

@@ -14,15 +14,15 @@ public class Environment
     private InitVar varToMove = null;
     private boolean moveNext = false;
 
-    private Environment()
+    public Environment()
     {
         localVars.put(rootBlock, new HashMap<>());
     }
 
-    public static Environment getInstance()
-    {
-        return instance;
-    }
+//    public static Environment getInstance()
+//    {
+//        return instance;
+//    }
 
     public void beginBlock(Block block) throws Exception
     {
@@ -151,5 +151,10 @@ public class Environment
     public void disableSkippingUndeclared()
     {
         skipUndeclared = false;
+    }
+
+    public static void reset()
+    {
+        instance = new Environment();
     }
 }
