@@ -52,22 +52,6 @@ public class Environment
         curLevel--;
     }
 
-    public void gotStatement(Statement statement)
-    {
-        if (statement instanceof InitVar)
-        {
-
-        }
-        else if (statement instanceof AssignVar)
-        {
-
-        }
-        else
-        {
-
-        }
-    }
-
     public void declareVar(InitVar initVar) throws Exception
     {
         if (moveNext)
@@ -101,6 +85,12 @@ public class Environment
         throw new Exception("Semantic error");
     }
 
+    private void raiseError(Var var, String msg) throws Exception
+    {
+        ErrorHandler.getInstance().displayErrorLine(var.getPos(), msg);
+        throw new Exception("Semantic error");
+    }
+
     public void moveNextVarToNextBlock()
     {
         moveNext = true;
@@ -111,13 +101,18 @@ public class Environment
         if (skipUndeclared)
             return;
 
-        checkVar(var.getName(), var.isArray());
-    }
+        String varName = var.getName();
 
-    private void checkVar(String varName, boolean isTable) throws Exception
-    {
         if (varToMove != null && varToMove.getVar().getName().equals(varName))
-            return;
+        {
+            if (varToMove.getVar().isArray() == var.isArray())
+                return;
+
+            if (varToMove.getVar().isArray())
+                raiseError(var, "Missing index in table variable " + varName);
+            else
+                raiseError(var, "Got index in not-table variable " + varName);
+        }
 
         Block blockIter = curBlock;
         Map<String, LocalVar> declaredVarsIter = localVars.get(curBlock);
@@ -126,22 +121,24 @@ public class Environment
         {
             if (declaredVarsIter.containsKey(varName))
             {
-                LocalVar var = declaredVarsIter.get(varName);
-                if (var.isArray() == isTable)
+                LocalVar localVar = declaredVarsIter.get(varName);
+                if (localVar.isArray() == var.isArray())
                 {
                     return;
                 }
                 else
                 {
-                    //TODO: get and display position of var
-                    throw new Exception("Semantic exception - table problem");
+                    if (localVar.isArray())
+                        raiseError(var, "Missing index in table variable " + varName);
+                    else
+                        raiseError(var, "Got index in not-table variable " + varName);
                 }
             }
 
             blockIter = blockIter.getParentBlock();
         }
 
-        throw new Exception("Semantic exception - use of an undeclared variable " + varName);
+        raiseError(var, "Using of undeclared variable " + varName);
     }
 
     private boolean skipUndeclared = false;
@@ -155,16 +152,4 @@ public class Environment
     {
         skipUndeclared = false;
     }
-
-//    private InitVar toMove = null;
-//
-//    public void pushInitVar(InitVar initVar)
-//    {
-//        toMove = initVar;
-//    }
-//
-//    public void popInitVar()
-//    {
-//
-//    }
 }

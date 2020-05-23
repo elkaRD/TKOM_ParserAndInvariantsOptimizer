@@ -6,6 +6,8 @@ public class Var extends Expression
     private String name;
     private Expression index = null;
 
+    private CharPos pos = null;
+
     public void setName(String name)
     {
         this.name = name;
@@ -29,6 +31,16 @@ public class Var extends Expression
     public boolean isArray()
     {
         return index != null;
+    }
+
+    public CharPos getPos()
+    {
+        return pos;
+    }
+
+    public void setPos(CharPos pos)
+    {
+        this.pos = pos;
     }
 
     @Override

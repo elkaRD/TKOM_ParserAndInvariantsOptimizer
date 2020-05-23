@@ -356,6 +356,7 @@ public class Parser implements IParser
     private Var parseVar() throws Exception
     {
         Var var = new Var();
+        var.setPos(peekToken().tokenPos);
 
         TokenId token = (TokenId) getToken(TokenType.ID);
         var.setName(token.value);
