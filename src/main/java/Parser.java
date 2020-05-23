@@ -284,6 +284,8 @@ public class Parser implements IParser
     {
         ForStatement statement = new ForStatement();
 
+        Environment.getInstance().moveNextVarToNextBlock();
+
         getToken(TokenType.FOR);
         getToken(TokenType.PARENTHESES_OPEN);
         if (!checkToken(TokenType.SEMICOLON))
@@ -324,7 +326,10 @@ public class Parser implements IParser
         statement.setPos(peekToken().tokenPos);
 
         statement.setType(getToken(TokenAttr.VAR_TYPE));
+
+        Environment.getInstance().enableSkippingUndeclared();
         statement.setVar(parseVar());
+        Environment.getInstance().disableSkippingUndeclared();
 
         if (getOptionalToken(TokenType.ASSIGN))
         {
@@ -359,6 +364,8 @@ public class Parser implements IParser
             var.setIndex(parseExpression());
             getToken(TokenType.SQUARE_CLOSE);
         }
+
+        Environment.getInstance().usedVariable(var);
 
         return var;
     }

@@ -120,4 +120,30 @@ public class Block extends Statement
 //    {
 //
 //    }
+
+    @Override
+    public List<String> getReadVars()
+    {
+        List<String> result = new ArrayList<>();
+
+        for (Statement st : statements)
+        {
+            result.addAll(st.getReadVars());
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<String> getWrittenVars()
+    {
+        List<String> result = new ArrayList<>();
+
+        for (Statement st : statements)
+        {
+            result.addAll(st.getWrittenVars());
+        }
+
+        return result;
+    }
 }

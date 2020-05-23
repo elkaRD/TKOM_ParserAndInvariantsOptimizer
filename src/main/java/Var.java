@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Var extends Expression
 {
     private String name;
@@ -23,6 +26,11 @@ public class Var extends Expression
         return this.index;
     }
 
+    public boolean isArray()
+    {
+        return index != null;
+    }
+
     @Override
     public String toString()
     {
@@ -30,6 +38,14 @@ public class Var extends Expression
         if (index != null)
             result += "[" + index + "]";
 
+        return result;
+    }
+
+    @Override
+    public List<String> getReadVars()
+    {
+        List<String> result = new ArrayList<>();
+        result.add(name);
         return result;
     }
 }

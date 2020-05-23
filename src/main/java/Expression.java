@@ -30,6 +30,15 @@ public class Expression
         return result;
     }
 
-    protected List<String> readVars = new ArrayList<>();
-    protected List<String> writtenVars = new ArrayList<>();
+    public List<String> getReadVars()
+    {
+        List<String> result = new ArrayList<>();
+
+        for (Expression expr : expressions)
+        {
+            result.addAll(expr.getReadVars());
+        }
+
+        return result;
+    }
 }

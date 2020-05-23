@@ -1,5 +1,8 @@
 import com.sun.org.apache.xml.internal.security.Init;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForStatement extends LoopStatement
 {
     private Statement firstParam = null;
@@ -50,5 +53,17 @@ public class ForStatement extends LoopStatement
         result += ")" + block;
 
         return result;
+    }
+
+    @Override
+    public List<String> getReadVars()
+    {
+        List<String> result = new ArrayList<>();
+        result.addAll(secondParam.getReadVars());
+        result.addAll(thirdParam.getReadVars());
+        //if ()
+        while(result.remove("acbd")) {}
+
+        return null;
     }
 }

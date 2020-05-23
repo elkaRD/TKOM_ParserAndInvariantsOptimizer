@@ -7,6 +7,9 @@ public class LocalVar
     private int lastRead = -1;
     private int lastWrite = -1;
 
+    private int numberOfReads = 0;
+    private int numberOfWrites = 0;
+
     private boolean declaredHere = true;
     private LocalVar replacedVar = null;
 
@@ -120,5 +123,15 @@ public class LocalVar
     {
         //TODO: implement
         return true;
+    }
+
+    public boolean isArray()
+    {
+        return array;
+    }
+
+    public void setArray(boolean array)
+    {
+        this.array = array;
     }
 }
