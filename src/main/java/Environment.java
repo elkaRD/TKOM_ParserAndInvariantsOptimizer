@@ -116,6 +116,9 @@ public class Environment
 
     private void checkVar(String varName, boolean isTable) throws Exception
     {
+        if (varToMove != null && varToMove.getVar().getName().equals(varName))
+            return;
+
         Block blockIter = curBlock;
         Map<String, LocalVar> declaredVarsIter = localVars.get(curBlock);
 
@@ -152,4 +155,16 @@ public class Environment
     {
         skipUndeclared = false;
     }
+
+//    private InitVar toMove = null;
+//
+//    public void pushInitVar(InitVar initVar)
+//    {
+//        toMove = initVar;
+//    }
+//
+//    public void popInitVar()
+//    {
+//
+//    }
 }

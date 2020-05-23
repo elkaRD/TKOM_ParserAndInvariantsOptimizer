@@ -8,12 +8,12 @@ public class TKOM
                 "void main () \n" +
                 "{ \n" +
                 "   int z = 0; \n" +
-//                "   for (int i = 0; !(i < 20); i = i + 1 ) \n" +
-//                "   { \n" +
-//                "       int b = 3 * i + (12 / i); b = 12;  \n" +
-//                //"       int b = 3; \n" +
-//                //"       a = 20; \n" +
-//                "   }  \n" +
+                "   for (int i = 0; !(i < 20); i = i + 1 ) \n" +
+                "   { \n" +
+                "       int b = 3 * i + (12 / i); b = 12;  \n" +
+//                "       int b = 3; \n" +
+                "       t = 20; \n" +
+                "   }  \n" +
                 "   int c; int x; \n" +
                 "   while (x <= 1 || x > 10 || (x == 1 && !(x!=5)))  \n" +
                 "   { \n" +
@@ -26,11 +26,14 @@ public class TKOM
                 "} \n";
 
 //        String example = "" +
-//                "int a = 5; \n" +
+//                //"int a = 5; \n" +
 //                "" +
 //                "void main() \n" +
 //                "{ \n" +
-//                "   a = 5; \n" +
+//                "   for (int i = 0; i < 10; i = i + 1) \n" +
+//                "   { \n" +
+//                "        \n" +
+//                "   } \n" +
 //                "} \n";
 
         InputManager input = new InputManager();
