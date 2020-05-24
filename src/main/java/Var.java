@@ -54,7 +54,7 @@ public class Var extends Expression
     }
 
     @Override
-    public List<String> getReadVars()
+    public List<String> getVars()
     {
         List<String> result = new ArrayList<>();
         result.add(name);

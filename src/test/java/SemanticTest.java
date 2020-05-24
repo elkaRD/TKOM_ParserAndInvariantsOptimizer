@@ -112,6 +112,34 @@ public class SemanticTest
         assertTrue(checkCodeInMain("int x; { int x[8]; x[0] = 4; } x = 7;"));
     }
 
+    @Test
+    public void codeTest()
+    {
+        String example = "" +
+                "bool t[20] = true; \n" +
+                "float a = 5.0; \n" +
+                "void main () \n" +
+                "{ \n" +
+                "   int z = 0; \n" +
+                "   for (int i = 0; !(i < 20); i = i + 1 ) \n" +
+                "   { \n" +
+                "       int b = 3 * i + (12 / i); b = 12;  \n" +
+                "       t[i] = 20; \n" +
+                "   }  \n" +
+                "   int c; int x; \n" +
+                "   while (x <= 1 || x > 10 || (x == 1 && !(x!=5)))  \n" +
+                "   { \n" +
+                "      x = x + 20; \n" +
+                "      c = -(a+20 + -x); \n" +
+                "       if (true) { continue; } else break; \n" +
+                "   } \n" +
+                "   while (true) \n" +
+                "       t[1] = 3; \n" +
+                "} \n";
+
+        assertFalse(foundError(example));
+    }
+
     private boolean foundError(String inputText)
     {
         InputManager input = new InputManager();

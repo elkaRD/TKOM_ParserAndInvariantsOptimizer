@@ -59,11 +59,48 @@ public class ForStatement extends LoopStatement
     public List<String> getReadVars()
     {
         List<String> result = new ArrayList<>();
-        result.addAll(secondParam.getReadVars());
-        result.addAll(thirdParam.getReadVars());
-        //if ()
-        while(result.remove("acbd")) {}
 
-        return null;
+        if (firstParam != null)
+            result.addAll(firstParam.getReadVars());
+        if (secondParam != null)
+            result.addAll(secondParam.getVars());
+        if (thirdParam != null)
+            result.addAll(thirdParam.getReadVars());
+
+        return result;
+    }
+
+    @Override
+    public List<String> getWrittenVars()
+    {
+        List<String> result = new ArrayList<>();
+
+        if (firstParam != null)
+            result.addAll(firstParam.getWrittenVars());
+        if (thirdParam != null)
+            result.addAll(thirdParam.getWrittenVars());
+
+        return result;
+    }
+
+    @Override
+    public void fillEnvironment(Environment environment, int linesOffset)
+    {
+//        if (firstParam != null)
+//        {
+//            List<String> readVars = firstParam.getReadVars();
+//            for (String var : readVars)
+//            {
+//                environment.readVar(block, var, 0);
+//            }
+//        }
+//        if (secondParam != null)
+//        {
+//            result.addAll(secondParam.getVars());
+//        }
+//        if (thirdParam != null)
+//        {
+//            result.addAll(thirdParam.getReadVars());
+//        }
     }
 }

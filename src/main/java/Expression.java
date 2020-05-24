@@ -30,13 +30,13 @@ public class Expression
         return result;
     }
 
-    public List<String> getReadVars()
+    public List<String> getVars()
     {
         List<String> result = new ArrayList<>();
 
         for (Expression expr : expressions)
         {
-            result.addAll(expr.getReadVars());
+            result.addAll(expr.getVars());
         }
 
         return result;

@@ -24,4 +24,9 @@ public class Statement
     {
         return null;
     }
+
+    public void fillEnvironment(Environment environment, int linesOffset)
+    {
+
+    }
 }

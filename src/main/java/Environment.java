@@ -157,4 +157,21 @@ public class Environment
     {
         instance = new Environment();
     }
+
+    public void initVar(Block block, String varName, int line)
+    {
+
+    }
+
+    public void readVar(Block block, String varName, int line)
+    {
+
+    }
+
+    public void writeVar(Block block, String varName, int line)
+    {
+
+    }
+
+    
 }

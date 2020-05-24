@@ -29,7 +29,12 @@ public class AssignVar extends Statement
     @Override
     public List<String> getReadVars()
     {
-        return varValue.getReadVars();
+        List<String> result = new ArrayList<>();
+        if (var.getIndex() != null)
+            result.addAll(var.getIndex().getVars());
+        result.addAll(varValue.getVars());
+
+        return result;
     }
 
     @Override

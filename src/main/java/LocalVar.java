@@ -1,15 +1,17 @@
+import java.util.Set;
+import java.util.TreeSet;
+
 public class LocalVar
 {
     private String var;
-    private int initPos = -1;
-    private int firstRead = -1;
-    private int firstWrite = -1;
-    private int lastRead = -1;
-    private int lastWrite = -1;
+
+    private Set<Integer> reads = new TreeSet<>();
+    private Set<Integer> writes = new TreeSet<>();
 
     private int numberOfReads = 0;
     private int numberOfWrites = 0;
 
+    private int initPos = -1;
     private boolean declaredHere = true;
     private LocalVar replacedVar = null;
 
@@ -28,64 +30,9 @@ public class LocalVar
         this.array = var.getIndex() != null;
     }
 
-    public int getInitPos()
-    {
-        return initPos;
-    }
-
-    public void setInitPos(int initPos)
-    {
-        this.initPos = initPos;
-    }
-
-    public int getFirstRead()
-    {
-        return firstRead;
-    }
-
-    public void setFirstRead(int firstRead)
-    {
-        this.firstRead = firstRead;
-    }
-
-    public int getFirstWrite()
-    {
-        return firstWrite;
-    }
-
-    public void setFirstWrite(int firstWrite)
-    {
-        this.firstWrite = firstWrite;
-    }
-
-    public int getLastRead()
-    {
-        return lastRead;
-    }
-
-    public void setLastRead(int lastRead)
-    {
-        this.lastRead = lastRead;
-    }
-
-    public int getLastWrite()
-    {
-        return lastWrite;
-    }
-
-    public void setLastWrite(int lastWrite)
-    {
-        this.lastWrite = lastWrite;
-    }
-
     public boolean isDeclaredHere()
     {
         return declaredHere;
-    }
-
-    public void setDeclaredHere(boolean declaredHere)
-    {
-        this.declaredHere = declaredHere;
     }
 
     public LocalVar getReplacedVar()
@@ -101,28 +48,12 @@ public class LocalVar
     public LocalVar copyForInheritedScope()
     {
         LocalVar newVar = new LocalVar();
-        newVar.initPos = -1;
-
-        newVar.firstRead = this.firstRead;
-        newVar.firstWrite = this.firstWrite;
-        newVar.lastRead = this.lastRead;
-        newVar.lastWrite = this.lastWrite;
         newVar.array = this.array;
 
         newVar.declaredHere = false;
+        newVar.replacedVar = this;
 
         return newVar;
-    }
-
-    public boolean isNotModified()
-    {
-        return firstWrite == -1;
-    }
-
-    public boolean hasConstWrite()
-    {
-        //TODO: implement
-        return true;
     }
 
     public boolean isArray()
@@ -130,8 +61,25 @@ public class LocalVar
         return array;
     }
 
-    public void setArray(boolean array)
+    public void addRead(int readLine)
     {
-        this.array = array;
+        reads.add(readLine);
+        numberOfReads++;
+    }
+
+    public void addWrite(int writeLine)
+    {
+        writes.add(writeLine);
+        numberOfWrites++;
+    }
+
+    public void setInitPos(int initPos)
+    {
+        this.initPos = initPos;
+    }
+
+    public int getInitPos()
+    {
+        return this.initPos;
     }
 }
