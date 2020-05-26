@@ -27,6 +27,8 @@ public class Parser implements IParser
         Program program = parseProgram();
         //Block.debugBlock.moveStatementHigher(Block.debugStatement);
         System.out.println(program);
+
+        environment.optimize();
     }
 
     private Program parseProgram() throws Exception
@@ -123,12 +125,16 @@ public class Parser implements IParser
             statement = new SimpleStatement(getLastOptionalToken());
         }
 
+        environment.gotStatement(statement);
+
         return statement;
     }
 
     private IfStatement parseCondition() throws Exception
     {
         IfStatement statement = new IfStatement();
+
+        environment.addAtBegin();
 
         getToken(TokenType.IF);
         getToken(TokenType.PARENTHESES_OPEN);
@@ -285,6 +291,7 @@ public class Parser implements IParser
     {
         ForStatement statement = new ForStatement();
 
+        environment.addAtBegin();
         environment.moveNextVarToNextBlock();
 
         getToken(TokenType.FOR);
@@ -299,7 +306,9 @@ public class Parser implements IParser
         getToken(TokenType.SEMICOLON);
         if (!checkToken(TokenType.SEMICOLON))
             statement.setSecondParam(parseLogicalStatement());
+
         getToken(TokenType.SEMICOLON);
+        environment.addAtEnd();
         if (!checkToken(TokenType.PARENTHESES_CLOSE))
             statement.setThirdParam(parseAssignVar());
         getToken(TokenType.PARENTHESES_CLOSE);
@@ -311,6 +320,8 @@ public class Parser implements IParser
     private WhileStatement parseWhileLoop() throws Exception
     {
         WhileStatement statement = new WhileStatement();
+
+        environment.addAtBegin();
 
         getToken(TokenType.WHILE);
         getToken(TokenType.PARENTHESES_OPEN);
@@ -328,6 +339,7 @@ public class Parser implements IParser
 
         statement.setType(getToken(TokenAttr.VAR_TYPE));
 
+        environment.nextWrite();
         environment.enableSkippingUndeclared();
         statement.setVar(parseVar());
         environment.disableSkippingUndeclared();
@@ -347,6 +359,8 @@ public class Parser implements IParser
         AssignVar statement = new AssignVar();
         statement.setPos(peekToken().tokenPos);
 
+        environment.nextWrite();
+
         statement.setVar(parseVar());
         getToken(TokenType.ASSIGN);
         statement.setVarValue(parseExpression());
@@ -360,6 +374,9 @@ public class Parser implements IParser
         var.setPos(peekToken().tokenPos);
 
         TokenId token = (TokenId) getToken(TokenType.ID);
+
+        environment.onParseVar(token.value);
+
         var.setName(token.value);
         if (getOptionalToken(TokenType.SQUARE_OPEN))
         {

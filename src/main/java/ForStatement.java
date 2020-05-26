@@ -2,6 +2,8 @@ import com.sun.org.apache.xml.internal.security.Init;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ForStatement extends LoopStatement
 {
@@ -56,9 +58,9 @@ public class ForStatement extends LoopStatement
     }
 
     @Override
-    public List<String> getReadVars()
+    public Set<String> getReadVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
 
         if (firstParam != null)
             result.addAll(firstParam.getReadVars());
@@ -67,18 +69,22 @@ public class ForStatement extends LoopStatement
         if (thirdParam != null)
             result.addAll(thirdParam.getReadVars());
 
+        result.addAll(block.getReadVars());
+
         return result;
     }
 
     @Override
-    public List<String> getWrittenVars()
+    public Set<String> getWrittenVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
 
         if (firstParam != null)
             result.addAll(firstParam.getWrittenVars());
         if (thirdParam != null)
             result.addAll(thirdParam.getWrittenVars());
+
+        result.addAll(block.getWrittenVars());
 
         return result;
     }
@@ -102,5 +108,6 @@ public class ForStatement extends LoopStatement
 //        {
 //            result.addAll(thirdParam.getReadVars());
 //        }
+
     }
 }

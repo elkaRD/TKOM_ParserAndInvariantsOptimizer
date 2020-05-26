@@ -29,11 +29,11 @@ public class TKOM
 //                //"int a = 5; \n" +
 //                "" +
 //                "void main() \n" +
-//                "{ \n" +
-//                "   for (int i = 0; i < 10; i = i + 1) \n" +
-//                "   { \n" +
-//                "        \n" +
-//                "   } \n" +
+//                "{ int a; int b = a;\n" +
+////                "   for (int i = 0; i < 10; i = i + 1) \n" +
+////                "   { \n" +
+////                "        \n" +
+////                "   } \n" +
 //                "} \n";
 
         InputManager input = new InputManager();

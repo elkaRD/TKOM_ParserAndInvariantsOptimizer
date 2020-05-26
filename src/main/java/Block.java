@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Block extends Statement
 {
@@ -122,9 +124,9 @@ public class Block extends Statement
 //    }
 
     @Override
-    public List<String> getReadVars()
+    public Set<String> getReadVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
 
         for (Statement st : statements)
         {
@@ -135,9 +137,9 @@ public class Block extends Statement
     }
 
     @Override
-    public List<String> getWrittenVars()
+    public Set<String> getWrittenVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
 
         for (Statement st : statements)
         {
@@ -145,5 +147,24 @@ public class Block extends Statement
         }
 
         return result;
+    }
+
+    private List<Statement> preStatements = new ArrayList<>();
+    private List<Statement> postStatements = new ArrayList<>();
+
+    public void addPreStatement(Statement statement)
+    {
+        preStatements.add(statement);
+    }
+
+    public void addPostStatement(Statement statement)
+    {
+        postStatements.add(statement);
+    }
+
+    @Override
+    public void fillEnvironment(Environment environment, int linesOffset)
+    {
+
     }
 }

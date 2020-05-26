@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Statement
 {
@@ -15,14 +17,14 @@ public class Statement
         this.pos = pos;
     }
 
-    public List<String> getReadVars()
+    public Set<String> getReadVars()
     {
-        return null;
+        return new TreeSet<>();
     }
 
-    public List<String> getWrittenVars()
+    public Set<String> getWrittenVars()
     {
-        return null;
+        return new TreeSet<>();
     }
 
     public void fillEnvironment(Environment environment, int linesOffset)

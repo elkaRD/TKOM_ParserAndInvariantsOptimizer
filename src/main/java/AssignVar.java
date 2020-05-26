@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class AssignVar extends Statement
 {
@@ -27,9 +29,9 @@ public class AssignVar extends Statement
     }
 
     @Override
-    public List<String> getReadVars()
+    public Set<String> getReadVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
         if (var.getIndex() != null)
             result.addAll(var.getIndex().getVars());
         result.addAll(varValue.getVars());
@@ -38,9 +40,9 @@ public class AssignVar extends Statement
     }
 
     @Override
-    public List<String> getWrittenVars()
+    public Set<String> getWrittenVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
         result.add(var.getName());
 
         return result;
