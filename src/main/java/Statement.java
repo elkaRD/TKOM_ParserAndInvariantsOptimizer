@@ -27,6 +27,11 @@ public class Statement
         return new TreeSet<>();
     }
 
+    public Set<String> getDeclaredVars()
+    {
+        return new TreeSet<>();
+    }
+
     public void fillEnvironment(Environment environment, int linesOffset)
     {
 

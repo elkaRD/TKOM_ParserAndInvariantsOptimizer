@@ -28,7 +28,9 @@ public class Parser implements IParser
         //Block.debugBlock.moveStatementHigher(Block.debugStatement);
         System.out.println(program);
 
-        environment.optimize();
+        program.getBlock().getReadVars();
+        program.getBlock().getWrittenVars();
+        //environment.optimize();
     }
 
     private Program parseProgram() throws Exception
@@ -106,11 +108,13 @@ public class Parser implements IParser
         else if (checkToken(TokenAttr.VAR_TYPE))
         {
             statement = parseInitVar();
+            environment.onParseVarStatement(statement);
             getToken(TokenType.SEMICOLON);
         }
         else if (checkToken(TokenType.ID))
         {
             statement = parseAssignVar();
+            environment.onParseVarStatement(statement);
             getToken(TokenType.SEMICOLON);
         }
         else

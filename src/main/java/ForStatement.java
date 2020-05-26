@@ -38,6 +38,10 @@ public class ForStatement extends LoopStatement
         this.block = block;
         this.block.setIsLoop();
         this.block.setOwner(this);
+
+        this.block.addPreStatement(firstParam);
+        this.block.addPreExpression(secondParam);
+        this.block.addPostStatement(thirdParam);
     }
 
     @Override
@@ -61,16 +65,7 @@ public class ForStatement extends LoopStatement
     public Set<String> getReadVars()
     {
         Set<String> result = new TreeSet<>();
-
-        if (firstParam != null)
-            result.addAll(firstParam.getReadVars());
-        if (secondParam != null)
-            result.addAll(secondParam.getVars());
-        if (thirdParam != null)
-            result.addAll(thirdParam.getReadVars());
-
         result.addAll(block.getReadVars());
-
         return result;
     }
 
@@ -78,14 +73,15 @@ public class ForStatement extends LoopStatement
     public Set<String> getWrittenVars()
     {
         Set<String> result = new TreeSet<>();
-
-        if (firstParam != null)
-            result.addAll(firstParam.getWrittenVars());
-        if (thirdParam != null)
-            result.addAll(thirdParam.getWrittenVars());
-
         result.addAll(block.getWrittenVars());
+        return result;
+    }
 
+    @Override
+    public Set<String> getDeclaredVars()
+    {
+        Set<String> result = new TreeSet<>();
+        result.addAll(block.getDeclaredVars());
         return result;
     }
 

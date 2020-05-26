@@ -1,4 +1,3 @@
-import java.nio.Buffer;
 import java.util.*;
 
 public class Environment
@@ -10,11 +9,11 @@ public class Environment
     private int curLevel = 0;
 
     private Map<Block, Map<String, LocalVar>> localVars = new HashMap<>();
-    private Map<Block, Integer> varsCounter = new HashMap<>();
+    private Map<Block, Integer> statementCounters = new HashMap<>();
 
-    private List<BufferedVarUse> delayedVarsBegin = new ArrayList<>();
-    private List<BufferedVarUse> delayedVarsEnd = new ArrayList<>();
-    private Map<Block, List<BufferedVarUse>> toAddAtEnd = new HashMap<>();
+    private List<Statement> delayedStatementsBegin = new ArrayList<>();
+    private List<Statement> delayedStatementsEnd = new ArrayList<>();
+    private Map<Block, List<Statement>> toAddAtEnd = new HashMap<>();
 
     private InitVar varToMove = null;
     private boolean moveNext = false;
@@ -29,7 +28,7 @@ public class Environment
     public Environment()
     {
         localVars.put(rootBlock, new HashMap<>());
-        varsCounter.put(rootBlock, 0);
+        statementCounters.put(rootBlock, 0);
     }
 
 //    public static Environment getInstance()
@@ -40,7 +39,7 @@ public class Environment
     public void beginBlock(Block block) throws Exception
     {
         localVars.put(block, new HashMap<>());
-        varsCounter.put(block, 0);
+        statementCounters.put(block, 0);
 
         Map<String, LocalVar> parentVars = localVars.get(curBlock);
         for (String var : parentVars.keySet())
@@ -62,21 +61,24 @@ public class Environment
         bufferBegin = false;
         bufferEnd = false;
 
-        for (BufferedVarUse varUse : delayedVarsBegin)
-            onParseVar(varUse.varName, varUse.write);
+        for (Statement st : delayedStatementsBegin)
+            onParseVarStatement(st);
 
         toAddAtEnd.put(curBlock, new ArrayList<>());
-        for (BufferedVarUse varUse : delayedVarsEnd)
-            toAddAtEnd.get(curBlock).add(varUse);
+        for (Statement st : delayedStatementsEnd)
+            toAddAtEnd.get(curBlock).add(st);
 
-        delayedVarsBegin.clear();
-        delayedVarsEnd.clear();
+        delayedStatementsBegin.clear();
+        delayedStatementsEnd.clear();
     }
 
     public void endBlock()
     {
-        for (BufferedVarUse varUse : toAddAtEnd.get(curBlock))
-            onParseVar(varUse.varName, varUse.write);
+        bufferBegin = false;
+        bufferEnd = false;
+
+        for (Statement st : toAddAtEnd.get(curBlock))
+            onParseVarStatement(st);
 
         toAddAtEnd.remove(curBlock);
 
@@ -267,25 +269,54 @@ public class Environment
         bufferEnd = true;
     }
 
-    public void onParseVar(String varName)
+    public void onParseVarStatement(Statement statement) //initVar and assignVar
     {
-        BufferedVarUse varUse = new BufferedVarUse();
-        varUse.varName = varName;
-        varUse.write = nextWritten;
-        nextWritten = false;
+        if (!(statement instanceof AssignVar) && !(statement instanceof InitVar))
+            System.out.println("FATAL ERROR ENV");
 
         if (bufferBegin)
         {
-            delayedVarsBegin.add(varUse);
+            delayedStatementsBegin.add(statement);
         }
         else if (bufferEnd)
         {
-            delayedVarsEnd.add(varUse);
+            delayedStatementsEnd.add(statement);
         }
         else
         {
-            onParseVar(varUse.varName, varUse.write);
+            Set<String> reads = statement.getReadVars();
+            Set<String> writes = statement.getWrittenVars();
+
+            for (String var : reads)
+                onParseVar(var, false);
+
+            for (String var : writes)
+                onParseVar(var, true);
+
+            statementCounters.put(curBlock, statementCounters.get(curBlock) + 1);
         }
+    }
+
+
+    public void onParseVar(String varName)
+    {
+//        BufferedVarUse varUse = new BufferedVarUse();
+//        varUse.varName = varName;
+//        varUse.write = nextWritten;
+//        nextWritten = false;
+//
+//        if (bufferBegin)
+//        {
+//            delayedStatementsBegin.add(varUse);
+//        }
+//        else if (bufferEnd)
+//        {
+//            delayedStatementsEnd.add(varUse);
+//        }
+//        else
+//        {
+//            onParseVar(varUse.varName, varUse.write);
+//        }
     }
 
     private void onParseVar(String varName, boolean write)
@@ -299,9 +330,9 @@ public class Environment
             {
                 LocalVar localVar = declaredVarsIter.get(varName);
                 if (write)
-                    localVar.addWrite(varsCounter.get(curBlock));
+                    localVar.addWrite(statementCounters.get(curBlock));
                 else
-                    localVar.addRead(varsCounter.get(curBlock));
+                    localVar.addRead(statementCounters.get(curBlock));
 
                 break;
             }
@@ -309,6 +340,6 @@ public class Environment
             blockIter = blockIter.getParentBlock();
         }
 
-        varsCounter.put(curBlock, varsCounter.get(curBlock) + 1);
+
     }
 }

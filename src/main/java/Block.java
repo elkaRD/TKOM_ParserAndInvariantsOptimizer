@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Block extends Statement
 {
@@ -123,14 +120,101 @@ public class Block extends Statement
 //
 //    }
 
+    public Map<String, LocalVar> localVars = new HashMap<>();
+
     @Override
     public Set<String> getReadVars()
     {
         Set<String> result = new TreeSet<>();
+        Set<String> declaredVars = new TreeSet<>();
+
+        int counter = preStatements.size() + preExpressions.size();
+
+        for (Statement st : preStatements)
+        {
+            declaredVars.addAll(st.getDeclaredVars());
+            Set<String> usedVars = st.getReadVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                    localVars.put(var, new LocalVar());
+                }
+                if (!declaredVars.contains(var))
+                {
+                    localVars.get(var).addRead(counter);
+                }
+            }
+
+            counter++;
+        }
+
+        for (Expression expr : preExpressions)
+        {
+            Set<String> usedVars = expr.getVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                    localVars.put(var, new LocalVar());
+                }
+                if (!declaredVars.contains(var))
+                {
+                    localVars.get(var).addRead(counter);
+                }
+            }
+
+//            result.addAll(st.getReadVars());
+
+            counter++;
+        }
 
         for (Statement st : statements)
         {
-            result.addAll(st.getReadVars());
+            declaredVars.addAll(st.getDeclaredVars());
+            Set<String> usedVars = st.getReadVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                    localVars.put(var, new LocalVar());
+                }
+                if (!declaredVars.contains(var))
+                {
+                    localVars.get(var).addRead(counter);
+                }
+            }
+
+//            result.addAll(st.getReadVars());
+
+            counter++;
+        }
+
+        for (Statement st : postStatements)
+        {
+            declaredVars.addAll(st.getDeclaredVars());
+            Set<String> usedVars = st.getReadVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                    localVars.put(var, new LocalVar());
+                }
+                if (!declaredVars.contains(var))
+                {
+                    localVars.get(var).addRead(counter);
+                }
+            }
+
+            counter++;
         }
 
         return result;
@@ -140,10 +224,52 @@ public class Block extends Statement
     public Set<String> getWrittenVars()
     {
         Set<String> result = new TreeSet<>();
+        Set<String> declaredVars = new TreeSet<>();
+
+        int counter = preStatements.size() + preExpressions.size();
+
+        for (Statement st : preStatements)
+        {
+            declaredVars.addAll(st.getDeclaredVars());
+            Set<String> usedVars = st.getWrittenVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                    localVars.put(var, new LocalVar());
+                }
+                if (!declaredVars.contains(var))
+                {
+                    localVars.get(var).addRead(counter);
+                }
+            }
+
+            counter++;
+        }
 
         for (Statement st : statements)
         {
-            result.addAll(st.getWrittenVars());
+            declaredVars.addAll(st.getDeclaredVars());
+            Set<String> usedVars = st.getWrittenVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                    localVars.put(var, new LocalVar());
+                }
+                if (!declaredVars.contains(var))
+                {
+                    localVars.get(var).addWrite(counter);
+                }
+            }
+
+//            result.addAll(st.getReadVars());
+
+            counter++;
         }
 
         return result;
@@ -151,19 +277,39 @@ public class Block extends Statement
 
     private List<Statement> preStatements = new ArrayList<>();
     private List<Statement> postStatements = new ArrayList<>();
+    private List<Expression> preExpressions = new ArrayList<>();
 
     public void addPreStatement(Statement statement)
     {
+        if (statement == null)
+            return;
+
         preStatements.add(statement);
+    }
+
+    public void addPreExpression(Expression expr)
+    {
+        if (expr == null)
+            return;
+
+        preExpressions.add(expr);
     }
 
     public void addPostStatement(Statement statement)
     {
+        if (statement == null)
+            return;
+
         postStatements.add(statement);
     }
 
     @Override
     public void fillEnvironment(Environment environment, int linesOffset)
+    {
+
+    }
+
+    public void optimize()
     {
 
     }

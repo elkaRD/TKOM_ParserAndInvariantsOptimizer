@@ -18,4 +18,9 @@ public class DefFunction
     {
         return "\nvoid " + mainFunction + "()" + mainBlock;
     }
+
+    public Block getBlock()
+    {
+        return mainBlock;
+    }
 }

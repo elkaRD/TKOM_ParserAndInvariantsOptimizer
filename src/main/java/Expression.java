@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Expression
 {
@@ -30,9 +32,9 @@ public class Expression
         return result;
     }
 
-    public List<String> getVars()
+    public Set<String> getVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
 
         for (Expression expr : expressions)
         {

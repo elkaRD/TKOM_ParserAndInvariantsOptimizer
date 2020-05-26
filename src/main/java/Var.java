@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Var extends Expression
 {
@@ -54,9 +56,9 @@ public class Var extends Expression
     }
 
     @Override
-    public List<String> getVars()
+    public Set<String> getVars()
     {
-        List<String> result = new ArrayList<>();
+        Set<String> result = new TreeSet<>();
         result.add(name);
         return result;
     }

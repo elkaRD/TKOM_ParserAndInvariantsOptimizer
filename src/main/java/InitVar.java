@@ -65,4 +65,13 @@ public class InitVar extends Statement
 
         return result;
     }
+
+    @Override
+    public Set<String> getDeclaredVars()
+    {
+        Set<String> result =  new TreeSet<>();
+        result.add(var.getName());
+
+        return result;
+    }
 }

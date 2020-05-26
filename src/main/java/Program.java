@@ -26,4 +26,9 @@ public class Program
 
         return result;
     }
+
+    public Block getBlock()
+    {
+        return mainFunction.getBlock();
+    }
 }
