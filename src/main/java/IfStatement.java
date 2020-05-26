@@ -16,6 +16,7 @@ public class IfStatement extends Statement
     {
         this.block = block;
         this.block.addPreExpression(condition);
+        this.block.blockOptimizer();
     }
 
     public void setElseBlock(Block block)

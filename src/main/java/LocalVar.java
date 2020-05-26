@@ -82,4 +82,14 @@ public class LocalVar
     {
         return this.initPos;
     }
+
+    public Set<Integer> getReads()
+    {
+        return reads;
+    }
+
+    public Set<Integer> getWrites()
+    {
+        return writes;
+    }
 }

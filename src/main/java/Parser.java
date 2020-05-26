@@ -26,10 +26,14 @@ public class Parser implements IParser
 
         Program program = parseProgram();
         //Block.debugBlock.moveStatementHigher(Block.debugStatement);
+
+
+        program.optimize();
+
         System.out.println(program);
 
-        program.getBlock().getReadVars();
-        program.getBlock().getWrittenVars();
+//        program.getBlock().getReadVars();
+//        program.getBlock().getWrittenVars();
         //environment.optimize();
     }
 

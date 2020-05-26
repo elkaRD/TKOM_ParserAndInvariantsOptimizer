@@ -36,4 +36,9 @@ public class Statement
     {
 
     }
+
+    public boolean optimize()
+    {
+        return false;
+    }
 }

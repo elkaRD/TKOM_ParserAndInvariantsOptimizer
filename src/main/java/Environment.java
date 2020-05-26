@@ -221,20 +221,22 @@ public class Environment
 
     public void gotStatement(Statement statement)
     {
-        Set<String> read = statement.getReadVars();
-        Set<String> written = statement.getWrittenVars();
+        return;
 
-        String rstr = "";
-        if (read != null)
-            for (String s : read)
-                rstr += s + ", ";
-
-        String wstr = "";
-        if (written != null)
-            for (String s : written)
-                wstr += s + ", ";
-
-        //System.out.println("Got statement " + statement + "     R: " + rstr + "    W: " + wstr);
+//        Set<String> read = statement.getReadVars();
+//        Set<String> written = statement.getWrittenVars();
+//
+//        String rstr = "";
+//        if (read != null)
+//            for (String s : read)
+//                rstr += s + ", ";
+//
+//        String wstr = "";
+//        if (written != null)
+//            for (String s : written)
+//                wstr += s + ", ";
+//
+//        //System.out.println("Got statement " + statement + "     R: " + rstr + "    W: " + wstr);
     }
 
     public boolean isLocalVar(Block block, String var)

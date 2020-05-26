@@ -23,4 +23,9 @@ public class DefFunction
     {
         return mainBlock;
     }
+
+    public boolean optimize()
+    {
+        return mainBlock.optimize();
+    }
 }

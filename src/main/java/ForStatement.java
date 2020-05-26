@@ -106,4 +106,10 @@ public class ForStatement extends LoopStatement
 //        }
 
     }
+
+    @Override
+    public boolean optimize()
+    {
+        return block.optimize();
+    }
 }

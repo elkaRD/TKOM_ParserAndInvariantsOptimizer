@@ -31,4 +31,9 @@ public class Program
     {
         return mainFunction.getBlock();
     }
+
+    public boolean optimize()
+    {
+        return mainFunction.optimize();
+    }
 }

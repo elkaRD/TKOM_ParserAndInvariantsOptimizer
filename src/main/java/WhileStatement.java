@@ -48,4 +48,10 @@ public class WhileStatement extends LoopStatement
         result.addAll(block.getDeclaredVars());
         return result;
     }
+
+    @Override
+    public boolean optimize()
+    {
+        return block.optimize();
+    }
 }

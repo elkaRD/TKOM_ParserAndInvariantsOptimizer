@@ -8,6 +8,8 @@ public class Block extends Statement
     private boolean isLoop = false;
     private Statement owner = this;
 
+    private boolean blockedOptimizer = false;
+
     private int level;
 
     public void setIsLoop()
@@ -315,8 +317,64 @@ public class Block extends Statement
 
     }
 
-    public void optimize()
+    @Override
+    public boolean optimize()
     {
+        if (blockedOptimizer)
+            return false;
 
+        boolean childOptimized = true;
+
+        while (childOptimized == true)
+        {
+            childOptimized = false;
+            for (Statement statement : statements)
+            {
+                if (statement.optimize())
+                {
+                    childOptimized = true;
+                    break;
+                }
+            }
+        }
+
+        boolean changedSomething = true;
+        boolean result = false;
+
+        while (changedSomething == true)
+        {
+            changedSomething = false;
+
+            localVars.clear();
+            getWrittenVars();
+            getReadVars();
+
+
+            for (Statement statement : statements)
+            {
+                if (!(statement instanceof AssignVar))
+                    continue;
+
+                Set<String> written = statement.getWrittenVars();
+                Set<String> read = statement.getReadVars();
+
+                String var = written.iterator().next();
+
+                if (localVars.containsKey(var) && localVars.get(var).getWrites().size() == 1)
+                {
+                    moveStatementHigher(statement);
+                    changedSomething = true;
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public void blockOptimizer()
+    {
+        blockedOptimizer = true;
     }
 }

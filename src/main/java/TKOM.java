@@ -42,9 +42,11 @@ public class TKOM
                 "   int a;" +
                 "   float b;" +
                 "   bool c;" +
+                "   int x;" +
                 "   for (int i = a; i < 10; i = i + b)" +
                 "   {   " +
                 "       b = 2 * i;" +
+                "       x = 5;" +
                 "       b = 5;" +
                 "   }" +
                 "}";
