@@ -128,7 +128,7 @@ public class Block extends Statement
         Set<String> result = new TreeSet<>();
         Set<String> declaredVars = new TreeSet<>();
 
-        int counter = preStatements.size() + preExpressions.size();
+        int counter = 0;
 
         for (Statement st : preStatements)
         {
@@ -140,10 +140,11 @@ public class Block extends Statement
                 if (!declaredVars.contains(var) && !result.contains(var))
                 {
                     result.add(var);
-                    localVars.put(var, new LocalVar());
                 }
                 if (!declaredVars.contains(var))
                 {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
                     localVars.get(var).addRead(counter);
                 }
             }
@@ -160,10 +161,11 @@ public class Block extends Statement
                 if (!declaredVars.contains(var) && !result.contains(var))
                 {
                     result.add(var);
-                    localVars.put(var, new LocalVar());
                 }
                 if (!declaredVars.contains(var))
                 {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
                     localVars.get(var).addRead(counter);
                 }
             }
@@ -183,10 +185,11 @@ public class Block extends Statement
                 if (!declaredVars.contains(var) && !result.contains(var))
                 {
                     result.add(var);
-                    localVars.put(var, new LocalVar());
                 }
                 if (!declaredVars.contains(var))
                 {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
                     localVars.get(var).addRead(counter);
                 }
             }
@@ -206,10 +209,11 @@ public class Block extends Statement
                 if (!declaredVars.contains(var) && !result.contains(var))
                 {
                     result.add(var);
-                    localVars.put(var, new LocalVar());
                 }
                 if (!declaredVars.contains(var))
                 {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
                     localVars.get(var).addRead(counter);
                 }
             }
@@ -226,7 +230,7 @@ public class Block extends Statement
         Set<String> result = new TreeSet<>();
         Set<String> declaredVars = new TreeSet<>();
 
-        int counter = preStatements.size() + preExpressions.size();
+        int counter = preStatements.size();
 
         for (Statement st : preStatements)
         {
@@ -238,10 +242,11 @@ public class Block extends Statement
                 if (!declaredVars.contains(var) && !result.contains(var))
                 {
                     result.add(var);
-                    localVars.put(var, new LocalVar());
                 }
                 if (!declaredVars.contains(var))
                 {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
                     localVars.get(var).addRead(counter);
                 }
             }
@@ -259,10 +264,11 @@ public class Block extends Statement
                 if (!declaredVars.contains(var) && !result.contains(var))
                 {
                     result.add(var);
-                    localVars.put(var, new LocalVar());
                 }
                 if (!declaredVars.contains(var))
                 {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
                     localVars.get(var).addWrite(counter);
                 }
             }
