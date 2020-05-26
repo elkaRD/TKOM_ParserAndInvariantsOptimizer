@@ -389,9 +389,9 @@ public class ScannerTest
             this.token = token;
         }
 
-        public void parse(IInputManager inputManager)
+        public Program parse(IInputManager inputManager)
         {
-
+            return null;
         }
 
         public String getParsedProgram()
@@ -409,9 +409,9 @@ public class ScannerTest
             this.tokens.add(token);
         }
 
-        public void parse(IInputManager inputManager)
+        public Program parse(IInputManager inputManager)
         {
-
+            return null;
         }
 
         public String getParsedProgram()

@@ -1,6 +1,8 @@
 import sun.java2d.pipe.SpanShapeRenderer;
 import sun.util.resources.cldr.ig.LocaleNames_ig;
 
+import java.util.Optional;
+
 public class Parser implements IParser
 {
     public void readToken(Token token)
@@ -19,7 +21,7 @@ public class Parser implements IParser
         return "" + program;
     }
 
-    public void parse(IInputManager inputManager) throws Exception
+    public Program parse(IInputManager inputManager) throws Exception
     {
         scanner = new Scanner();
         input = inputManager;
@@ -28,13 +30,21 @@ public class Parser implements IParser
         //Block.debugBlock.moveStatementHigher(Block.debugStatement);
 
 
-        program.optimize();
+        //program.optimize();
 
-        System.out.println(program);
+//        System.out.println(program);
 
 //        program.getBlock().getReadVars();
 //        program.getBlock().getWrittenVars();
         //environment.optimize();
+        return program;
+    }
+
+    public String parseAndOptimize(IInputManager inputManager) throws Exception
+    {
+        Program program = parse(inputManager);
+        program.optimize();
+        return program.toString();
     }
 
     private Program parseProgram() throws Exception

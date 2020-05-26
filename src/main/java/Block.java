@@ -62,6 +62,9 @@ public class Block extends Statement
     @Override
     public String toString()
     {
+        if (statements.size() == 0)
+            return "\n" + offset() + "{}\n";
+
         String result = "\n";
         if (bracketsRequired)
             result += offset() + "{\n";
@@ -320,10 +323,8 @@ public class Block extends Statement
     @Override
     public boolean optimize()
     {
-        if (blockedOptimizer)
-            return false;
-
         boolean childOptimized = true;
+        boolean childSomethingChanged = false;
 
         while (childOptimized == true)
         {
@@ -332,11 +333,15 @@ public class Block extends Statement
             {
                 if (statement.optimize())
                 {
+                    childSomethingChanged = true;
                     childOptimized = true;
                     break;
                 }
             }
         }
+
+        if (blockedOptimizer)
+            return childSomethingChanged;
 
         boolean changedSomething = true;
         boolean result = false;

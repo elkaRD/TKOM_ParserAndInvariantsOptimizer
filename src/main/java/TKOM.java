@@ -46,7 +46,16 @@ public class TKOM
                 "   for (int i = a; i < 10; i = i + b)" +
                 "   {   " +
                 "       b = 2 * i;" +
-                "       x = 5;" +
+                "       while (true)" +
+                "       {" +
+                "           x = 5;" +
+                "           i = i * 2;" +
+                "           if (false)" +
+                "               b = i;" +
+                "           while (false)" +
+                "               b = i;" +
+                "           while (false){}" +
+                "       }" +
                 "       b = 5;" +
                 "   }" +
                 "}";
@@ -56,8 +65,10 @@ public class TKOM
 
         try
         {
-            IParser parser = new Parser();
-            parser.parse(input);
+            Parser parser = new Parser();
+            String result = parser.parseAndOptimize(input);
+
+            System.out.println(result);
         }
         catch (Exception e)
         {
