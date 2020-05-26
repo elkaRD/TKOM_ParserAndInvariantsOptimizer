@@ -1,3 +1,4 @@
+import javax.swing.plaf.nimbus.State;
 import java.util.*;
 
 public class Block extends Statement
@@ -11,6 +12,8 @@ public class Block extends Statement
     private boolean blockedOptimizer = false;
 
     private int level;
+
+    private List<Statement> invariants = new ArrayList<>();
 
     public void setIsLoop()
     {
@@ -106,7 +109,7 @@ public class Block extends Statement
 
     public void moveStatementHigher(Statement statement)
     {
-        statements.remove(statement);
+        statements.remove(statement);//TODO: commented to test invariants
         //parentBlock.gotStatementFromChildBlock(statement, this);
 
 //        Statement toFind = this;
@@ -235,7 +238,7 @@ public class Block extends Statement
         Set<String> result = new TreeSet<>();
         Set<String> declaredVars = new TreeSet<>();
 
-        int counter = preStatements.size();
+        int counter = 0;
 
         for (Statement st : preStatements)
         {
@@ -258,6 +261,8 @@ public class Block extends Statement
 
             counter++;
         }
+
+        counter += preExpressions.size();
 
         for (Statement st : statements)
         {
@@ -365,15 +370,53 @@ public class Block extends Statement
 
                 String var = written.iterator().next();
 
-                if (localVars.containsKey(var) && localVars.get(var).getWrites().size() == 1)
+                if (!localVars.containsKey(var))
+                    continue;
+
+                if (localVars.get(var).getWrites().size() != 1)
+                    continue;
+
+                boolean readVarDeclaredOutside = true;
+                for (String readVar : read)
                 {
-                    moveStatementHigher(statement);
-                    changedSomething = true;
-                    result = true;
-                    break;
+                    if (!localVars.containsKey(readVar) || localVars.get(readVar).getWrites().size() != 0)
+                    {
+                        readVarDeclaredOutside = false;
+                        break;
+                    }
                 }
+                if (!readVarDeclaredOutside)
+                    continue;
+
+                boolean readBeforeWrite = false;
+                Set<Integer> readLines = localVars.get(var).getReads();
+                for (Integer line : readLines)
+                {
+                    if (line < localVars.get(var).getWrites().iterator().next())
+                    {
+                        readBeforeWrite = true;
+                        break;
+                    }
+                }
+                if (readBeforeWrite)
+                    continue;
+
+                moveStatementHigher(statement);
+//                invariants.add(statement);
+//                statements.remove(statement);
+                changedSomething = true;
+                result = true;
+                break;
             }
         }
+
+//        for (int i = invariants.size() - 1; i >= 0; i--)
+////            moveStatementHigher(invariants.get(i));
+
+//        for (Statement st : invariants)
+//            moveStatementHigher(st);
+//
+//        invariants.clear();
 
         return result;
     }

@@ -11,6 +11,7 @@ public class DefFunction
     public void setMainBlock(Block block)
     {
         mainBlock = block;
+        mainBlock.blockOptimizer();
     }
 
     @Override

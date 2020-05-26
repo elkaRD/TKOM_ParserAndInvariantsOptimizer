@@ -36,29 +36,74 @@ public class TKOM
 ////                "   } \n" +
 //                "} \n";
 
+//        String example = "" +
+//                "void main()" +
+//                "{" +
+////                "   int a;" +
+////                "   float b;" +
+////                "   bool c;" +
+////                "   int x;" +
+////                "   for (int i = a; i < 10; i = i + b)" +
+////                "   {   " +
+////                "       b = 2 * i;" +
+//                "       float first;" +
+//                "       float second;" +
+//                "       int t1;" +
+//                "       int t2;" +
+//                "       while (true)" +
+//                "       {" +
+////                "           x = i;" +
+////                "           i = i * 2;" +
+//                "           t1 = first;" +
+//                "           t2 = second;" +
+////                "           if (false)" +
+////                "           {" +
+////                "               b = i;" +
+////                "               for (;;)" +
+////                "                   b = i;" +
+////                "           }" +
+////                "           while (false)" +
+////                "           {" +
+////                "               b = i;" +
+////                "               for (;;)" +
+////                "                   b = i;" +
+////                "           }" +
+////                "           while (false){}" +
+//                "           second = 1;" +
+////                "       }" +
+////                "       b = 5;" +
+//                "   }" +
+//                "}";
+
         String example = "" +
                 "void main()" +
                 "{" +
                 "   int a;" +
-                "   float b;" +
-                "   bool c;" +
-                "   int x;" +
-                "   for (int i = a; i < 10; i = i + b)" +
-                "   {   " +
-                "       b = 2 * i;" +
-                "       while (true)" +
-                "       {" +
-                "           x = 5;" +
-                "           i = i * 2;" +
-                "           if (false)" +
-                "               b = i;" +
-                "           while (false)" +
-                "               b = i;" +
-                "           while (false){}" +
-                "       }" +
-                "       b = 5;" +
+                "   int b;" +
+                "   float x;" +
+                "   float y;" +
+                "   while (true)" +
+                "   { " +
+                "       x = a;" +
+                "       y = b;" +
+                "       b = 1;" +
+//                "       x = 2; " +
+//                "       y = 1;" +
+//                "       x = y;" +
+                "       " +
                 "   }" +
                 "}";
+
+//        String example = "" +
+//                "void main()" +
+//                "{" +
+//                "   int x;" +
+//                "   if (false)" +
+//                "   {" +
+//                "       for (;;)" +
+//                "           x = 2;" +
+//                "   }" +
+//                "}";
 
         InputManager input = new InputManager();
         input.readText(example);

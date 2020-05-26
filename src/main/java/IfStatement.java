@@ -60,4 +60,10 @@ public class IfStatement extends Statement
         result.addAll(block.getDeclaredVars());
         return result;
     }
+
+    @Override
+    public boolean optimize()
+    {
+        return block.optimize();
+    }
 }
