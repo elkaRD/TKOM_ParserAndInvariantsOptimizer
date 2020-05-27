@@ -349,22 +349,24 @@ public class Block extends Statement
                     //used variables can only be modified after invariant
                     if (localVars.get(readVar).getWrites().size() != 0)
                     {
-                        boolean otherWriteBeforeWrite = false;
-                        Set<Integer> writtenLines = localVars.get(readVar).getWrites();
-                        for (Integer line : writtenLines)
-                        {
-                            if (line < localVars.get(var).getWrites().iterator().next())
-                            {
-                                otherWriteBeforeWrite = true;
-                                break;
-                            }
-                        }
-                        if (otherWriteBeforeWrite)
-                        {
-                            readVarDeclaredOutside = false;
-                            break;
-                        }
+//                        boolean otherWriteBeforeWrite = false;
+//                        Set<Integer> writtenLines = localVars.get(readVar).getWrites();
+//                        for (Integer line : writtenLines)
+//                        {
+//                            if (line < localVars.get(var).getWrites().iterator().next())
+//                            {
+//                                otherWriteBeforeWrite = true;
+//                                break;
+//                            }
+//                        }
+//                        if (otherWriteBeforeWrite)
+//                        {
+//                            readVarDeclaredOutside = false;
+//                            break;
+//                        }
 
+                        readVarDeclaredOutside = false;
+                        break;
                     }
                 }
                 if (!readVarDeclaredOutside)
