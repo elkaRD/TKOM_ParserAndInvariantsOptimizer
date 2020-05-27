@@ -331,6 +331,7 @@ public class Block extends Statement
         boolean childOptimized = true;
         boolean childSomethingChanged = false;
 
+        //launch optimizer for all children
         while (childOptimized == true)
         {
             childOptimized = false;
@@ -345,54 +346,85 @@ public class Block extends Statement
             }
         }
 
+        //if we are in the block that can't participate in optimization (like 'if' block) then skip optimization
         if (blockedOptimizer)
             return childSomethingChanged;
 
+        //at this point all children are optimized and current block supports optimization, so we start optimizing
         boolean changedSomething = true;
         boolean result = false;
 
+        //trying iterate as long as we find new invariants (removing one invariant can unlock other invariants)
         while (changedSomething == true)
         {
             changedSomething = false;
 
+            //get local variables declared outside current block
             localVars.clear();
             getWrittenVars();
             getReadVars();
 
-
+            //iterate over all statements to find out which are invariants
             for (Statement statement : statements)
             {
+                //only AssignVar can be invariant
                 if (!(statement instanceof AssignVar))
                     continue;
 
+                //written (and var) is modified variable; read contains all variables on right side of = and all variables from index in case of table variables
                 Set<String> written = statement.getWrittenVars();
                 Set<String> read = statement.getReadVars();
 
                 String var = written.iterator().next();
 
+                //if localVars doesn't contain our var, it means that this var is declared in current block - we can't remove it
                 if (!localVars.containsKey(var))
                     continue;
 
+                //we can only remove variables that are being modified only once
                 if (localVars.get(var).getWrites().size() != 1)
                     continue;
 
                 boolean readVarDeclaredOutside = true;
                 for (String readVar : read)
                 {
-                    if (!localVars.containsKey(readVar) || localVars.get(readVar).getWrites().size() != 0)
+                    //variables used by invariant can't be declared in the current block
+                    if (!localVars.containsKey(readVar))
                     {
                         readVarDeclaredOutside = false;
                         break;
+                    }
+
+                    //used variables can only be modified after invariant
+                    if (localVars.get(readVar).getWrites().size() != 0)
+                    {
+                        boolean otherWriteBeforeWrite = false;
+                        Set<Integer> writtenLines = localVars.get(readVar).getWrites();
+                        for (Integer line : writtenLines)
+                        {
+                            if (line < localVars.get(var).getWrites().iterator().next())
+                            {
+                                otherWriteBeforeWrite = true;
+                                break;
+                            }
+                        }
+                        if (otherWriteBeforeWrite)
+                        {
+                            readVarDeclaredOutside = false;
+                            break;
+                        }
+
                     }
                 }
                 if (!readVarDeclaredOutside)
                     continue;
 
+                //potential invariant cannot be used before
                 boolean readBeforeWrite = false;
                 Set<Integer> readLines = localVars.get(var).getReads();
                 for (Integer line : readLines)
                 {
-                    if (line < localVars.get(var).getWrites().iterator().next())
+                    if (line <= localVars.get(var).getWrites().iterator().next())
                     {
                         readBeforeWrite = true;
                         break;

@@ -22,6 +22,7 @@ public class IfStatement extends Statement
     public void setElseBlock(Block block)
     {
         this.elseBlock = block;
+        this.elseBlock.blockOptimizer();
     }
 
     @Override
