@@ -65,8 +65,10 @@ public class TKOM
                 "           while (false)" +
                 "           {" +
                 "               b = i;" +
-                "               for (;;)" +
+                "               for (;;){" +
                 "                   b = i;" +
+                "                   second = 3;" +
+                "               }" +
                 "           }" +
                 "           while (false){}" +
                 "           second = 1;" +

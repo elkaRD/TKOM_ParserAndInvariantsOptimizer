@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -12,7 +10,6 @@ public class InitVar extends Statement
     public void setType(Token varType)
     {
         this.varType = varType;
-//        setPos(varType.tokenPos);
     }
 
     public void setVar(Var var)

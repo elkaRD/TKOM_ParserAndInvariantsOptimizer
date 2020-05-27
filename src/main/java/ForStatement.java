@@ -15,12 +15,6 @@ public class ForStatement extends LoopStatement
     public void setFirstParam(Statement statement) throws Exception
     {
         firstParam = statement;
-
-//        if (firstParam instanceof InitVar)
-//        {
-//            InitVar initVar = (InitVar) firstParam;
-//            Environment.getInstance().declareVar(initVar);
-//        }
     }
 
     public void setSecondParam(LogicalStatement statement)
@@ -36,7 +30,6 @@ public class ForStatement extends LoopStatement
     public void setBlock(Block block)
     {
         this.block = block;
-        this.block.setIsLoop();
         this.block.setOwner(this);
 
         this.block.addPreStatement(firstParam);
@@ -83,28 +76,6 @@ public class ForStatement extends LoopStatement
         Set<String> result = new TreeSet<>();
         result.addAll(block.getDeclaredVars());
         return result;
-    }
-
-    @Override
-    public void fillEnvironment(Environment environment, int linesOffset)
-    {
-//        if (firstParam != null)
-//        {
-//            List<String> readVars = firstParam.getReadVars();
-//            for (String var : readVars)
-//            {
-//                environment.readVar(block, var, 0);
-//            }
-//        }
-//        if (secondParam != null)
-//        {
-//            result.addAll(secondParam.getVars());
-//        }
-//        if (thirdParam != null)
-//        {
-//            result.addAll(thirdParam.getReadVars());
-//        }
-
     }
 
     @Override

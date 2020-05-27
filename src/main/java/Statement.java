@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,11 +28,6 @@ public class Statement
     public Set<String> getDeclaredVars()
     {
         return new TreeSet<>();
-    }
-
-    public void fillEnvironment(Environment environment, int linesOffset)
-    {
-
     }
 
     public boolean optimize()

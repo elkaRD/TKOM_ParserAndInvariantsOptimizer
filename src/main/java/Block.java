@@ -1,4 +1,3 @@
-import javax.swing.plaf.nimbus.State;
 import java.util.*;
 
 public class Block extends Statement
@@ -6,35 +5,19 @@ public class Block extends Statement
     private List<Statement> statements = new ArrayList<>();
     private boolean bracketsRequired = false;
     private Block parentBlock = null;
-    private boolean isLoop = false;
     private Statement owner = this;
 
     private boolean blockedOptimizer = false;
 
     private int level;
 
-    private List<Statement> invariants = new ArrayList<>();
-
-    public void setIsLoop()
-    {
-        isLoop = true;
-    }
-
-//    public static int debugCounter = 0;
-//    public static Statement debugStatement = null;
-//    public static Block debugBlock = null;
+    private List<Statement> preStatements = new ArrayList<>();
+    private List<Statement> postStatements = new ArrayList<>();
+    private List<Expression> preExpressions = new ArrayList<>();
 
     public void addStatement(Statement statement)
     {
         statements.add(statement);
-
-//        debugCounter += 1;
-//        if (debugCounter == 5)
-//        {
-//            System.out.println("Found statement no. 3: " + statement);
-//            debugStatement = statement;
-//            debugBlock = this;
-//        }
     }
 
     public void setParentBlock(Block block)
@@ -80,8 +63,6 @@ public class Block extends Statement
         if (bracketsRequired)
             result += offset() + "}\n";
 
-
-
         return result;
     }
 
@@ -109,24 +90,10 @@ public class Block extends Statement
 
     public void moveStatementHigher(Statement statement)
     {
-        statements.remove(statement);//TODO: commented to test invariants
-        //parentBlock.gotStatementFromChildBlock(statement, this);
-
-//        Statement toFind = this;
-//
-//        while (toFind != null && !(toFind instanceof LoopStatement))
-//        {
-//            toFind = toFind.
-//        }
-
+        statements.remove(statement);
         int index = parentBlock.statements.indexOf(owner);
         parentBlock.statements.add(index, statement);
     }
-
-//    public void gotStatementFromChildBlock(Statement statement, Block child)
-//    {
-//
-//    }
 
     public Map<String, LocalVar> localVars = new HashMap<>();
 
@@ -178,8 +145,6 @@ public class Block extends Statement
                 }
             }
 
-//            result.addAll(st.getReadVars());
-
             counter++;
         }
 
@@ -201,8 +166,6 @@ public class Block extends Statement
                     localVars.get(var).addRead(counter);
                 }
             }
-
-//            result.addAll(st.getReadVars());
 
             counter++;
         }
@@ -283,17 +246,11 @@ public class Block extends Statement
                 }
             }
 
-//            result.addAll(st.getReadVars());
-
             counter++;
         }
 
         return result;
     }
-
-    private List<Statement> preStatements = new ArrayList<>();
-    private List<Statement> postStatements = new ArrayList<>();
-    private List<Expression> preExpressions = new ArrayList<>();
 
     public void addPreStatement(Statement statement)
     {
@@ -317,12 +274,6 @@ public class Block extends Statement
             return;
 
         postStatements.add(statement);
-    }
-
-    @Override
-    public void fillEnvironment(Environment environment, int linesOffset)
-    {
-
     }
 
     @Override
@@ -434,21 +385,11 @@ public class Block extends Statement
                     continue;
 
                 moveStatementHigher(statement);
-//                invariants.add(statement);
-//                statements.remove(statement);
                 changedSomething = true;
                 result = true;
                 break;
             }
         }
-
-//        for (int i = invariants.size() - 1; i >= 0; i--)
-////            moveStatementHigher(invariants.get(i));
-
-//        for (Statement st : invariants)
-//            moveStatementHigher(st);
-//
-//        invariants.clear();
 
         return result;
     }

@@ -14,7 +14,6 @@ public class WhileStatement extends LoopStatement
     public void setBlock(Block block)
     {
         this.block = block;
-        this.block.setIsLoop();
         this.block.setOwner(this);
         this.block.addPreExpression(condition);
     }

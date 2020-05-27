@@ -27,16 +27,6 @@ public class Parser implements IParser
         input = inputManager;
 
         Program program = parseProgram();
-        //Block.debugBlock.moveStatementHigher(Block.debugStatement);
-
-
-        //program.optimize();
-
-//        System.out.println(program);
-
-//        program.getBlock().getReadVars();
-//        program.getBlock().getWrittenVars();
-        //environment.optimize();
         return program;
     }
 
@@ -142,8 +132,6 @@ public class Parser implements IParser
 
             statement = new SimpleStatement(getLastOptionalToken());
         }
-
-        environment.gotStatement(statement);
 
         return statement;
     }
@@ -393,8 +381,6 @@ public class Parser implements IParser
 
         TokenId token = (TokenId) getToken(TokenType.ID);
 
-        environment.onParseVar(token.value);
-
         var.setName(token.value);
         if (getOptionalToken(TokenType.SQUARE_OPEN))
         {
@@ -431,17 +417,6 @@ public class Parser implements IParser
     private Token nextToken = null;
 
     private Token lastOptionalToken = null;
-
-//    private Token peekNextToken()
-//    {
-//        if (curToken == null)
-//        {
-//            curToken = scanner.parseNextToken(input);
-//            nextToken = scanner.parseNextToken(input);
-//        }
-//
-//        return nextToken == null ? curToken : nextToken;
-//    }
 
     private Token peekToken()
     {

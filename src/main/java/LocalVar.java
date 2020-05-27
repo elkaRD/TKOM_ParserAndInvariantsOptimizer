@@ -8,16 +8,10 @@ public class LocalVar
     private Set<Integer> reads = new TreeSet<>();
     private Set<Integer> writes = new TreeSet<>();
 
-    private int numberOfReads = 0;
-    private int numberOfWrites = 0;
-
-    private int initPos = -1;
     private boolean declaredHere = true;
     private LocalVar replacedVar = null;
 
     private boolean array = false;
-
-    private Expression firstWriteValue = null;
 
     public String getVar()
     {
@@ -64,23 +58,11 @@ public class LocalVar
     public void addRead(int readLine)
     {
         reads.add(readLine);
-        numberOfReads++;
     }
 
     public void addWrite(int writeLine)
     {
         writes.add(writeLine);
-        numberOfWrites++;
-    }
-
-    public void setInitPos(int initPos)
-    {
-        this.initPos = initPos;
-    }
-
-    public int getInitPos()
-    {
-        return this.initPos;
     }
 
     public Set<Integer> getReads()

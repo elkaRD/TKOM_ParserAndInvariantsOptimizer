@@ -17,24 +17,12 @@ public class Environment
 
     private InitVar varToMove = null;
     private boolean moveNext = false;
-    private boolean moveNextAtNextEnd = false;
-
-    private class BufferedVarUse
-    {
-        public String varName;
-        public boolean write = false;
-    }
 
     public Environment()
     {
         localVars.put(rootBlock, new HashMap<>());
         statementCounters.put(rootBlock, 0);
     }
-
-//    public static Environment getInstance()
-//    {
-//        return instance;
-//    }
 
     public void beginBlock(Block block) throws Exception
     {
@@ -128,13 +116,6 @@ public class Environment
     public void moveNextVarToNextBlock()
     {
         moveNext = true;
-        moveNextAtNextEnd = false;
-    }
-
-    public void moveNextVarToEndOfNextBlock()
-    {
-        moveNextAtNextEnd = true;
-        moveNext = false;
     }
 
     public void usedVariable(Var var) throws Exception
@@ -194,62 +175,6 @@ public class Environment
         skipUndeclared = false;
     }
 
-    public static void reset()
-    {
-        instance = new Environment();
-    }
-
-    public void initVar(Block block, String varName, int line)
-    {
-
-    }
-
-    public void readVar(Block block, String varName, int line)
-    {
-
-    }
-
-    public void writeVar(Block block, String varName, int line)
-    {
-
-    }
-
-    private void checkCurBlock()
-    {
-
-    }
-
-    public void gotStatement(Statement statement)
-    {
-        return;
-
-//        Set<String> read = statement.getReadVars();
-//        Set<String> written = statement.getWrittenVars();
-//
-//        String rstr = "";
-//        if (read != null)
-//            for (String s : read)
-//                rstr += s + ", ";
-//
-//        String wstr = "";
-//        if (written != null)
-//            for (String s : written)
-//                wstr += s + ", ";
-//
-//        //System.out.println("Got statement " + statement + "     R: " + rstr + "    W: " + wstr);
-    }
-
-    public boolean isLocalVar(Block block, String var)
-    {
-        Map<String, LocalVar> blockVars = localVars.get(block);
-        return blockVars.get(var).isDeclaredHere();
-    }
-
-    public void optimize()
-    {
-        rootBlock.fillEnvironment(this, 0);
-    }
-
     private boolean nextWritten = false;
     private boolean bufferBegin = false;
     private boolean bufferEnd = false;
@@ -299,28 +224,6 @@ public class Environment
         }
     }
 
-
-    public void onParseVar(String varName)
-    {
-//        BufferedVarUse varUse = new BufferedVarUse();
-//        varUse.varName = varName;
-//        varUse.write = nextWritten;
-//        nextWritten = false;
-//
-//        if (bufferBegin)
-//        {
-//            delayedStatementsBegin.add(varUse);
-//        }
-//        else if (bufferEnd)
-//        {
-//            delayedStatementsEnd.add(varUse);
-//        }
-//        else
-//        {
-//            onParseVar(varUse.varName, varUse.write);
-//        }
-    }
-
     private void onParseVar(String varName, boolean write)
     {
         Block blockIter = curBlock;
@@ -341,7 +244,5 @@ public class Environment
 
             blockIter = blockIter.getParentBlock();
         }
-
-
     }
 }
