@@ -249,6 +249,28 @@ public class Block extends Statement
             counter++;
         }
 
+        for (Statement st : postStatements)
+        {
+            declaredVars.addAll(st.getDeclaredVars());
+            Set<String> usedVars = st.getWrittenVars();
+
+            for (String var : usedVars)
+            {
+                if (!declaredVars.contains(var) && !result.contains(var))
+                {
+                    result.add(var);
+                }
+                if (!declaredVars.contains(var))
+                {
+                    if (!localVars.containsKey(var))
+                        localVars.put(var, new LocalVar());
+                    localVars.get(var).addWrite(counter);
+                }
+            }
+
+            counter++;
+        }
+
         return result;
     }
 

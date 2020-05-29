@@ -38,10 +38,12 @@ public class TKOM
 
 //        String example = "" +
 //                "void main()" +
-//                "{" +
-//                "   int tab[20];" +
-//                "   int a = 3 * tab;" +
-//                "}";
+//                "{ \n" +
+//                "   int tab[20]; \n" +
+//                "   int a = 3 * tab[0]; \n" +
+//                "   { int tab; \n" +
+//                "       tab[0] = 4; } \n" +
+//                "} \n";
 
 //        String example = "" +
 //                "void main()" +
@@ -71,10 +73,10 @@ public class TKOM
 //                "           }" +
 //                "           while (false)" +
 //                "           {" +
-//                "               b = i;" +
+////                "               b = i;" +
 //                "               for (;;){" +
 //                "                   b = i;" +
-//                "                   second = 3;" +
+////                "                   second = 3;" +
 //                "               }" +
 //                "           }" +
 //                "           while (false){}" +
@@ -84,19 +86,31 @@ public class TKOM
 //                "   }" +
 //                "}";
 
+//        String example = "" +
+//                "void main()" +
+//                "{" +
+//                "   int a;" +
+//                "   int b;" +
+//                "   float x;" +
+//                "   float y;" +
+//                "   for (x = 1;; )" +
+//                "   { " +
+////                        param1
+////                        param2
+//                "       x = a;" +
+//                "       b = 1;" +
+//                "       y = b;" +
+////                        param3
+//                "       " +
+//                "   }" +
+//                "}";
+
         String example = "" +
                 "void main()" +
-                "{" +
-                "   int a;" +
-                "   int b;" +
-                "   float x;" +
-                "   float y;" +
-                "   for (;;)" +
-                "   { " +
-                "       x = a;" +
-                "       y = b;" +
-                "       b = 1;" +
-                "       " +
+                "{ " +
+                "   int x = 0;" +
+                "   for (;;x=0)" +
+                "       x = 2;" +
                 "   }" +
                 "}";
 
