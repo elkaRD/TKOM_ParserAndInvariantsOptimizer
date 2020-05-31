@@ -49,6 +49,9 @@ public class Parser implements IParser
 
         program.setMainFunction(parseDefFunction());
 
+        if (curToken != null)
+            raiseError(peekToken(), "Expected EOF");
+
         return program;
     }
 
@@ -510,5 +513,11 @@ public class Parser implements IParser
     {
         ErrorHandler.getInstance().displayErrorLine(token.tokenPos, "Expected " + expectedAttr);
         throw new Exception("Parser TokenAttr error");
+    }
+
+    private void raiseError(Token token, String msg) throws Exception
+    {
+        ErrorHandler.getInstance().displayErrorLine(token.tokenPos, msg);
+        throw new Exception("Parser error");
     }
 }

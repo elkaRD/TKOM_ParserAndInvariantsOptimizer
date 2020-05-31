@@ -221,6 +221,13 @@ public class ParserTest
         assertTrue(checkCodeInMain("int x; if (x == 1) x = 2; else x = 3;"));
     }
 
+    @Test
+    public void eofTest()
+    {
+        assertTrue(foundError("void main () {}}"));
+        assertTrue(foundError("void main () {} int x;"));
+    }
+
     private boolean foundError(String inputText)
     {
         InputManager input = new InputManager();

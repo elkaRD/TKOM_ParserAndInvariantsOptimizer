@@ -42,8 +42,7 @@ public class Scanner implements IScanner
                 break;
             }
 
-            //TODO: temp solution; update when writing parser
-            //Token could be null in case when we trying to get token from text containing only white characters
+            //It's not used when parsing a program but it is used in tests with MockParser to check correctness of detecting tokens
             if (parser != null && token != null)
                 parser.readToken(token);
         }
@@ -342,7 +341,6 @@ public class Scanner implements IScanner
 
     private boolean isWhite(char c)
     {
-        //TODO: test if character '\r' is also a white space
         return Character.isWhitespace(c);
     }
 

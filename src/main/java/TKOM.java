@@ -2,6 +2,7 @@ public class TKOM
 {
     public static void main(String[] args)
     {
+
 //        String example = "" +
 //                "bool t[20] = true; \n" +
 //                "float a = 5.0; \n" +
@@ -106,13 +107,12 @@ public class TKOM
 //                "}";
 
         String example = "" +
-                "void main()" +
-                "{ " +
-                "   int x = 0;" +
-                "   for (;;x=0)" +
-                "       x = 2;" +
-                "   }" +
-                "}";
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (x = 1;;) \n" +
+                "       x = 2; \n" +
+                "} \n";
 
 //        String example = "" +
 //                "void main()" +
@@ -131,7 +131,9 @@ public class TKOM
         try
         {
             Parser parser = new Parser();
-            String result = parser.parseAndOptimize(input);
+            Optimizer optimizer = new Optimizer();
+            Program program = parser.parse(input);
+            String result = optimizer.optimize(program);
 
             System.out.println(result);
         }

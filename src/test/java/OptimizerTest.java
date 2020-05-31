@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class OptimizerTest
 {
     @Test
-    public void optimizationTest1()
+    public void notMovingReadBeforeTest()
     {
         String input = "float a = 5;\n" +
                 "void main()\n" +
@@ -31,7 +31,7 @@ public class OptimizerTest
     }
 
     @Test
-    public void optimizationTest2()
+    public void movingReadAfterTest()
     {
         String input = "float a = 5;\n" +
                 "void main()\n" +
@@ -57,7 +57,7 @@ public class OptimizerTest
     }
 
     @Test
-    public void optimizationTest3()
+    public void notMovingFewWritesTest()
     {
         String input = "int a = 3;\n" +
                 "void main()\n" +
@@ -83,7 +83,7 @@ public class OptimizerTest
     }
 
     @Test
-    public void optimizationTest4()
+    public void movingShadowedTest()
     {
         String input = "int a = 3;\n" +
                 "\n" +
@@ -113,7 +113,7 @@ public class OptimizerTest
     }
 
     @Test
-    public void optimizationTest5()
+    public void movingWhenUsingLocallyStaticTest()
     {
         String input = "void main()\n" +
                 "{\n" +
@@ -143,7 +143,226 @@ public class OptimizerTest
     }
 
     @Test
-    public void optimizationTest6()
+    public void forLoopFirstParamWriteTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (x = 1;;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (x = 1;;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void forLoopSecondParamWriteTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (; x > 1 ;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (; x > 1 ;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void forLoopThirdParamWriteTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (; ; x = 1) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (; ; x = 1) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void forLoopFirstParamReadTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (int i = x;;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; \n" +
+                "   for (int i = x;;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void forLoopSecondParamReadTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   int a = 0;\n" +
+                "   for (; a > x ;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   int a = 0;\n" +
+                "   for (; a > x ;) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void forLoopThirdParamReadTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   int a = 0;\n" +
+                "   for (; ; a = x) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   int a = 0;" +
+                "   x = 2;\n" +
+                "   for (; ; a = x) \n" +
+                "   {} \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void emptyForLoopTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   for (; ; ) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   x = 2;\n" +
+                "   for (; ; ) \n" +
+                "   {} \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void emptyWhileLoopTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   while (true) \n" +
+                "       x = 2; \n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   x = 2;\n" +
+                "   while (true) \n" +
+                "   {} \n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void ifBlockTest()
+    {
+        String input = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   int y = 1;" +
+                "   if (true) " +
+                "   {\n" +
+                "       x = 2; " +
+                "   }" +
+                "   else" +
+                "   {" +
+                "       y = 3;" +
+                "   }\n" +
+                "} \n";
+
+        String expectedOutput = "" +
+                "void main() \n" +
+                "{  \n" +
+                "   int x = 0; " +
+                "   int y = 1;" +
+                "   if (true) " +
+                "   {\n" +
+                "       x = 2; " +
+                "   }" +
+                "   else" +
+                "   {" +
+                "       y = 3;" +
+                "   }\n" +
+                "} \n";
+
+        assertTrue(checkEncodeDecode(input, expectedOutput));
+    }
+
+    @Test
+    public void complexText()
     {
         String input = "int a = 5;  int b = 10; int c = 20;\n" +
                 "int d = 1;  int e = 2;  int f = 3;\n" +
@@ -233,6 +452,10 @@ public class OptimizerTest
         }
 
         expectedOutput = expectedOutput.replaceAll("\\s+","");
+
+        System.out.println(expectedOutput);
+        System.out.println(result);
+
         return result.equals(expectedOutput);
     }
 }
