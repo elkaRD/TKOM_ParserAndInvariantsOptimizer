@@ -7,13 +7,15 @@ public class Block extends Statement
     private Block parentBlock = null;
     private Statement owner = this;
 
-    private boolean blockedOptimizer = false;
-
     private int level;
 
+    //Objects necessary to optimize block
+    private boolean blockedOptimizer = false;
     private List<Statement> preStatements = new ArrayList<>();
     private List<Statement> postStatements = new ArrayList<>();
     private List<Expression> preExpressions = new ArrayList<>();
+    public Map<String, LocalVar> localVars = new HashMap<>();
+
 
     public void addStatement(Statement statement)
     {
@@ -95,7 +97,39 @@ public class Block extends Statement
         parentBlock.statements.add(index, statement);
     }
 
-    public Map<String, LocalVar> localVars = new HashMap<>();
+    private void handleReadVars(Set<String> usedVars, Set<String> declaredVars, Set<String> result, int counter)
+    {
+        for (String var : usedVars)
+        {
+            if (!declaredVars.contains(var) && !result.contains(var))
+            {
+                result.add(var);
+            }
+            if (!declaredVars.contains(var))
+            {
+                if (!localVars.containsKey(var))
+                    localVars.put(var, new LocalVar());
+                localVars.get(var).addRead(counter);
+            }
+        }
+    }
+
+    private void handleWrittenVars(Set<String> usedVars, Set<String> declaredVars, Set<String> result, int counter)
+    {
+        for (String var : usedVars)
+        {
+            if (!declaredVars.contains(var) && !result.contains(var))
+            {
+                result.add(var);
+            }
+            if (!declaredVars.contains(var))
+            {
+                if (!localVars.containsKey(var))
+                    localVars.put(var, new LocalVar());
+                localVars.get(var).addWrite(counter);
+            }
+        }
+    }
 
     @Override
     public Set<String> getReadVars()
@@ -110,20 +144,7 @@ public class Block extends Statement
             declaredVars.addAll(st.getDeclaredVars());
             Set<String> usedVars = st.getReadVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addRead(counter);
-                }
-            }
-
+            handleReadVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -131,20 +152,7 @@ public class Block extends Statement
         {
             Set<String> usedVars = expr.getVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addRead(counter);
-                }
-            }
-
+            handleReadVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -153,20 +161,7 @@ public class Block extends Statement
             declaredVars.addAll(st.getDeclaredVars());
             Set<String> usedVars = st.getReadVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addRead(counter);
-                }
-            }
-
+            handleReadVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -175,20 +170,7 @@ public class Block extends Statement
             declaredVars.addAll(st.getDeclaredVars());
             Set<String> usedVars = st.getReadVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addRead(counter);
-                }
-            }
-
+            handleReadVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -208,20 +190,7 @@ public class Block extends Statement
             declaredVars.addAll(st.getDeclaredVars());
             Set<String> usedVars = st.getWrittenVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addRead(counter);
-                }
-            }
-
+            handleWrittenVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -232,20 +201,7 @@ public class Block extends Statement
             declaredVars.addAll(st.getDeclaredVars());
             Set<String> usedVars = st.getWrittenVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addWrite(counter);
-                }
-            }
-
+            handleWrittenVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -254,20 +210,7 @@ public class Block extends Statement
             declaredVars.addAll(st.getDeclaredVars());
             Set<String> usedVars = st.getWrittenVars();
 
-            for (String var : usedVars)
-            {
-                if (!declaredVars.contains(var) && !result.contains(var))
-                {
-                    result.add(var);
-                }
-                if (!declaredVars.contains(var))
-                {
-                    if (!localVars.containsKey(var))
-                        localVars.put(var, new LocalVar());
-                    localVars.get(var).addWrite(counter);
-                }
-            }
-
+            handleWrittenVars(usedVars, declaredVars, result, counter);
             counter++;
         }
 
@@ -296,6 +239,38 @@ public class Block extends Statement
             return;
 
         postStatements.add(statement);
+    }
+
+    private boolean checkUsedVars(Set<String> read)
+    {
+        for (String readVar : read)
+        {
+            //variables used by invariant can't be declared in the current block
+            if (!localVars.containsKey(readVar))
+            {
+                return false;
+            }
+
+            //used variables can't be modified in current block
+            if (localVars.get(readVar).getWrites().size() != 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfUsedBefore(String var)
+    {
+        Set<Integer> readLines = localVars.get(var).getReads();
+        for (Integer line : readLines)
+        {
+            if (line <= localVars.get(var).getWrites().iterator().next())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -358,56 +333,14 @@ public class Block extends Statement
                 if (localVars.get(var).getWrites().size() != 1)
                     continue;
 
-                boolean readVarDeclaredOutside = true;
-                for (String readVar : read)
-                {
-                    //variables used by invariant can't be declared in the current block
-                    if (!localVars.containsKey(readVar))
-                    {
-                        readVarDeclaredOutside = false;
-                        break;
-                    }
-
-                    //used variables can only be modified after invariant
-                    if (localVars.get(readVar).getWrites().size() != 0)
-                    {
-//                        boolean otherWriteBeforeWrite = false;
-//                        Set<Integer> writtenLines = localVars.get(readVar).getWrites();
-//                        for (Integer line : writtenLines)
-//                        {
-//                            if (line < localVars.get(var).getWrites().iterator().next())
-//                            {
-//                                otherWriteBeforeWrite = true;
-//                                break;
-//                            }
-//                        }
-//                        if (otherWriteBeforeWrite)
-//                        {
-//                            readVarDeclaredOutside = false;
-//                            break;
-//                        }
-
-                        readVarDeclaredOutside = false;
-                        break;
-                    }
-                }
-                if (!readVarDeclaredOutside)
+                if (!checkUsedVars(read))
                     continue;
 
                 //potential invariant cannot be used before
-                boolean readBeforeWrite = false;
-                Set<Integer> readLines = localVars.get(var).getReads();
-                for (Integer line : readLines)
-                {
-                    if (line <= localVars.get(var).getWrites().iterator().next())
-                    {
-                        readBeforeWrite = true;
-                        break;
-                    }
-                }
-                if (readBeforeWrite)
+                if (checkIfUsedBefore(var))
                     continue;
 
+                //If we met all required conditions to optimize then we reached this fragment and can move statement to higher block
                 moveStatementHigher(statement);
                 changedSomething = true;
                 result = true;

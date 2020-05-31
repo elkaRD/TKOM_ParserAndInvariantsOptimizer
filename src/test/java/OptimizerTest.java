@@ -444,7 +444,9 @@ public class OptimizerTest
         try
         {
             Parser parser = new Parser();
-            result = parser.parseAndOptimize(input).replaceAll("\\s+","");
+            Optimizer optimizer = new Optimizer();
+            Program program = parser.parse(input);
+            result = optimizer.optimize(program).replaceAll("\\s+","");
         }
         catch (Exception e)
         {

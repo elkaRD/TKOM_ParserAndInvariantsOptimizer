@@ -30,13 +30,6 @@ public class Parser implements IParser
         return program;
     }
 
-    public String parseAndOptimize(IInputManager inputManager) throws Exception
-    {
-        Program program = parse(inputManager);
-        program.optimize();
-        return program.toString();
-    }
-
     private Program parseProgram() throws Exception
     {
         program = new Program();
