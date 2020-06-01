@@ -454,10 +454,6 @@ public class OptimizerTest
         }
 
         expectedOutput = expectedOutput.replaceAll("\\s+","");
-
-        System.out.println(expectedOutput);
-        System.out.println(result);
-
         return result.equals(expectedOutput);
     }
 }

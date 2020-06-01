@@ -3,9 +3,9 @@ public class TKOM
     public static void main(String[] args)
     {
 
-        if (args.length < 2)
+        if (args.length != 2)
         {
-            System.out.println("Too few arguments. First argument should be '-t' or '-f'.");
+            System.out.println("Wrong number of params. First argument should be '-t' or '-f'.");
             System.out.println("");
             System.out.println("After '-t' should be source code to optimize");
             System.out.println("After '-f' should be path to file with source code to optimize");

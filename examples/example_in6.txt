@@ -1,0 +1,10 @@
+void main()
+{
+	int x = 0;
+	int a = 0;
+	for (; ; a = x)
+		x = 2;
+
+	for (int i = x; ; )
+		x = 2;
+}
