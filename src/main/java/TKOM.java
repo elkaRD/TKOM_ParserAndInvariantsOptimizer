@@ -3,130 +3,36 @@ public class TKOM
     public static void main(String[] args)
     {
 
-//        String example = "" +
-//                "bool t[20] = true; \n" +
-//                "float a = 5.0; \n" +
-//                "void main () \n" +
-//                "{ \n" +
-//                "   int z = 0; \n" +
-//                "   for (int i = 0; !(i < 20); i = i + 1 ) \n" +
-//                "   { \n" +
-//                "       int b = 3 * i + (12 / i); b = 12;  \n" +
-////                "       int b = 3; \n" +
-//                "       t[i] = 20;\n" +
-//                "   }  \n" +
-//                "   int c; int x; \n" +
-//                "   while (x <= 1 || x > 10 || (x == 1 && !(x!=5)))  \n" +
-//                "   { \n" +
-//                "      x = x + 20; \n" +
-//                "      c = -(a+20 + -x); \n" +
-//                "       if (true) { continue; } else break; \n" +
-//                "   } \n" +
-//                "   while (true) \n" +
-//                "       t[1] = 3; \n" +
-//                "} \n";
+        if (args.length < 2)
+        {
+            System.out.println("Too few arguments. First argument should be '-t' or '-f'.");
+            System.out.println("");
+            System.out.println("After '-t' should be source code to optimize");
+            System.out.println("After '-f' should be path to file with source code to optimize");
+            System.out.println("");
+            System.out.println("");
+            System.out.println("Example:");
+            System.out.println("java -jar kod.jar -t \"void main() { int x; for (;;) x = 1; }\"");
+            return;
+        }
 
-//        String example = "" +
-//                //"int a = 5; \n" +
-//                "" +
-//                "void main() \n" +
-//                "{ int a; int b = a;\n" +
-////                "   for (int i = 0; i < 10; i = i + 1) \n" +
-////                "   { \n" +
-////                "        \n" +
-////                "   } \n" +
-//                "} \n";
-
-//        String example = "" +
-//                "void main()" +
-//                "{ \n" +
-//                "   int tab[20]; \n" +
-//                "   int a = 3 * tab[0]; \n" +
-//                "   { int tab; \n" +
-//                "       tab[0] = 4; } \n" +
-//                "} \n";
-
-//        String example = "" +
-//                "void main()" +
-//                "{" +
-//                "   int a;" +
-//                "   float b;" +
-//                "   bool c;" +
-//                "   int x;" +
-//                "   for (int i = a; i < 10; i = i + b)" +
-//                "   {   " +
-//                "       b = 2 * i;" +
-//                "       float first;" +
-//                "       float second;" +
-//                "       int t1;" +
-//                "       int t2;" +
-//                "       while (true)" +
-//                "       {" +
-//                "           x = i;" +
-//                "           i = i * 2;" +
-//                "           t1 = first;" +
-//                "           t2 = second;" +
-//                "           if (false)" +
-//                "           {" +
-//                "               b = i;" +
-//                "               for (;;)" +
-//                "                   b = i;" +
-//                "           }" +
-//                "           while (false)" +
-//                "           {" +
-////                "               b = i;" +
-//                "               for (;;){" +
-//                "                   b = i;" +
-////                "                   second = 3;" +
-//                "               }" +
-//                "           }" +
-//                "           while (false){}" +
-//                "           second = 1;" +
-//                "       }" +
-//                "       b = 5;" +
-//                "   }" +
-//                "}";
-
-//        String example = "" +
-//                "void main()" +
-//                "{" +
-//                "   int a;" +
-//                "   int b;" +
-//                "   float x;" +
-//                "   float y;" +
-//                "   for (x = 1;; )" +
-//                "   { " +
-////                        param1
-////                        param2
-//                "       x = a;" +
-//                "       b = 1;" +
-//                "       y = b;" +
-////                        param3
-//                "       " +
-//                "   }" +
-//                "}";
-
-        String example = "" +
-                "void main() \n" +
-                "{  \n" +
-                "   int x = 0; \n" +
-                "   for (x = 1;;) \n" +
-                "       x = 2; \n" +
-                "} \n";
-
-//        String example = "" +
-//                "void main()" +
-//                "{" +
-//                "   int x;" +
-//                "   if (false)" +
-//                "   {" +
-//                "       for (;;)" +
-//                "           x = 2;" +
-//                "   }" +
-//                "}";
+        String inputMode = args[0];
 
         InputManager input = new InputManager();
-        input.readText(example);
+
+        if (inputMode.equals("-t"))
+        {
+            input.readText(args[1]);
+        }
+        else if (inputMode.equals("-f"))
+        {
+            input.readFile(args[1]);
+        }
+        else
+        {
+            System.out.println("Unsupported mode");
+            return;
+        }
 
         try
         {
@@ -139,7 +45,7 @@ public class TKOM
         }
         catch (Exception e)
         {
-            System.out.println("Got exception from parser");
+            System.out.println("Got exception: " + e.getMessage());
             e.printStackTrace();
         }
     }

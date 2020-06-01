@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,7 +23,26 @@ public class InputManager implements IInputManager
 
     public void readFile(String pathToFile)
     {
+        reset();
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(pathToFile));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
 
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            plainText = sb.toString();
+            br.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Got exception when trying to read source file " + pathToFile);
+        }
+        detectNewLines();
     }
 
     public void readText(String text)

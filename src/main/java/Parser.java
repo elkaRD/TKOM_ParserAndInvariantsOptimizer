@@ -1,8 +1,3 @@
-import sun.java2d.pipe.SpanShapeRenderer;
-import sun.util.resources.cldr.ig.LocaleNames_ig;
-
-import java.util.Optional;
-
 public class Parser implements IParser
 {
     public void readToken(Token token)
