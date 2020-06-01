@@ -1,0 +1,20 @@
+float a = 5;
+int x = 3;
+
+float b = 7;
+int y = 6;
+
+void main()
+{
+	while (true)
+	{
+		x = 2;
+		a = x;
+	}
+
+	while (true)
+	{
+		a = x;
+		x = 2;
+	}
+}

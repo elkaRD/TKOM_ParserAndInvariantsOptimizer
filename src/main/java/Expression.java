@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Expression
 {
@@ -25,6 +27,18 @@ public class Expression
         {
             result += " " + ReservedTokens.getInstance().getStr(operators.get(i)) + " ";
             result += expressions.get(i+1);
+        }
+
+        return result;
+    }
+
+    public Set<String> getVars()
+    {
+        Set<String> result = new TreeSet<>();
+
+        for (Expression expr : expressions)
+        {
+            result.addAll(expr.getVars());
         }
 
         return result;

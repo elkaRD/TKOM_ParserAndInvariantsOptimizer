@@ -1,8 +1,4 @@
-import jdk.internal.util.xml.impl.Input;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ScannerTest
 {
     @Test
-    public void checkIdDetection1()
+    public void checkIdDetectionOnlyLetters()
     {
         Token token = getFirstToken("abcd");
         assertTrue(token.type == TokenType.ID);
@@ -21,7 +17,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkIdDetection2()
+    public void checkIdDetectionLettersAndDigits()
     {
         Token token = getFirstToken("abcd123");
         assertTrue(token.type == TokenType.ID);
@@ -31,7 +27,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkIdDetection3()
+    public void checkIdDetectionLettersDigitsAndLetters()
     {
         Token token = getFirstToken("abcd321ght");
         assertTrue(token.type == TokenType.ID);
@@ -51,7 +47,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkFloatDetection1()
+    public void checkFloatDetectionNoRightSide()
     {
         Token token = getFirstToken("123.");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -61,7 +57,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkFloatDetection2()
+    public void checkFloatDetectionLeftRightSide()
     {
         Token token = getFirstToken("123.45");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -71,7 +67,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkFloatDetection3()
+    public void checkFloatDetectionZeroPoint()
     {
         Token token = getFirstToken("0.");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -81,7 +77,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkFloatDetection4()
+    public void checkFloatDetectionLessThan1()
     {
         Token token = getFirstToken("0.12");
         assertTrue(token.type == TokenType.NUM_FLOAT);
@@ -142,7 +138,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkTokensDetection1()
+    public void checkTokensDetectionComplex()
     {
         String inputText = "void main ()                \n" +
                 "{                                      \n" +
@@ -213,7 +209,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkTokensDetection2()
+    public void checkTokensDetectionNoSeperators()
     {
         String inputText = "123.456.789abc";
 
@@ -226,7 +222,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkErrorDetection1()
+    public void checkErrorDetectionForbiddenCharacter()
     {
         CharPos errorPos = getErrorPos("#$%$#");
 
@@ -235,7 +231,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkErrorDetection2()
+    public void checkErrorDetectionForbiddenCharInMiddle()
     {
         CharPos errorPos = getErrorPos("123#$%$#");
 
@@ -244,7 +240,7 @@ public class ScannerTest
     }
 
     @Test
-    public void checkErrorDetection3()
+    public void checkErrorDetectionSingleDot()
     {
         CharPos errorPos = getErrorPos("abcd.abc");
 
@@ -389,9 +385,9 @@ public class ScannerTest
             this.token = token;
         }
 
-        public void parse(IInputManager inputManager)
+        public Program parse(IInputManager inputManager)
         {
-
+            return null;
         }
 
         public String getParsedProgram()
@@ -409,9 +405,9 @@ public class ScannerTest
             this.tokens.add(token);
         }
 
-        public void parse(IInputManager inputManager)
+        public Program parse(IInputManager inputManager)
         {
-
+            return null;
         }
 
         public String getParsedProgram()

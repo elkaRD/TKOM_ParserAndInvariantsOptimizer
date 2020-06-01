@@ -1,13 +1,14 @@
-import sun.rmi.runtime.Log;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class ForStatement extends Statement
+public class ForStatement extends LoopStatement
 {
     private Statement firstParam = null;
     private LogicalStatement secondParam = null;
     private Statement thirdParam = null;
-    private Statement statement = null;
+    private Block block = null;
 
-    public void setFirstParam(Statement statement)
+    public void setFirstParam(Statement statement) throws Exception
     {
         firstParam = statement;
     }
@@ -22,9 +23,14 @@ public class ForStatement extends Statement
         thirdParam = statement;
     }
 
-    public void setStatement(Statement statement)
+    public void setBlock(Block block)
     {
-        this.statement = statement;
+        this.block = block;
+        this.block.setOwner(this);
+
+        this.block.addPreStatement(firstParam);
+        this.block.addPreExpression(secondParam);
+        this.block.addPostStatement(thirdParam);
     }
 
     @Override
@@ -39,8 +45,38 @@ public class ForStatement extends Statement
         result += "; ";
         if (thirdParam != null)
             result += thirdParam;
-        result += ")" + statement;
+        result += ")" + block;
 
         return result;
+    }
+
+    @Override
+    public Set<String> getReadVars()
+    {
+        Set<String> result = new TreeSet<>();
+        result.addAll(block.getReadVars());
+        return result;
+    }
+
+    @Override
+    public Set<String> getWrittenVars()
+    {
+        Set<String> result = new TreeSet<>();
+        result.addAll(block.getWrittenVars());
+        return result;
+    }
+
+    @Override
+    public Set<String> getDeclaredVars()
+    {
+        Set<String> result = new TreeSet<>();
+        result.addAll(block.getDeclaredVars());
+        return result;
+    }
+
+    @Override
+    public boolean optimize()
+    {
+        return block.optimize();
     }
 }

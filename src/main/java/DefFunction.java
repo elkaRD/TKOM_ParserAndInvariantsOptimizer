@@ -11,11 +11,22 @@ public class DefFunction
     public void setMainBlock(Block block)
     {
         mainBlock = block;
+        mainBlock.blockOptimizer();
     }
 
     @Override
     public String toString()
     {
-        return "void " + mainFunction + "()" + mainBlock;
+        return "\nvoid " + mainFunction + "()" + mainBlock;
+    }
+
+    public Block getBlock()
+    {
+        return mainBlock;
+    }
+
+    public boolean optimize()
+    {
+        return mainBlock.optimize();
     }
 }

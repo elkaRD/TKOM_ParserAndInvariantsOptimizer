@@ -29,14 +29,5 @@ public class LogicalParam extends LogicalStatement
             result += ")";
 
         return result;
-
-//        if (!negation)
-//        {
-//            if (!bracketsNeeded)
-//                return super.toString();
-//
-//        }
-//
-//        return "!(" + super.toString() + ")";
     }
 }
